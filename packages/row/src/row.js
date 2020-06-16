@@ -1,4 +1,5 @@
-import { computed, h } from 'vue'
+import {computed, h} from 'vue'
+
 export default {
   name: 'ElRow',
 
@@ -22,16 +23,17 @@ export default {
   },
   setup(props, ctx) {
     const style = () => computed(() => {
-      const ret = {};
+      const ret = {}
 
       if (this.gutter) {
-        ret.marginLeft = `-${props.gutter / 2}px`;
-        ret.marginRight = ret.marginLeft;
+        ret.marginLeft = `-${props.gutter / 2}px`
+        ret.marginRight = ret.marginLeft
       }
 
-      return ret;
+      return ret
     })
-
+    const tag = props.tag
+    // const slots = ctx.slots
     return () => h(props.tag, {
       class: [
         'el-row',
@@ -66,4 +68,4 @@ export default {
       style: this.style
     }, this.$slots.default);
   }*/
-};
+}

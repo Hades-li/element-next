@@ -42,6 +42,11 @@ module.exports = (env, argv) => {
           test: /\.vue$/,
           loader: 'vue-loader'
         },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: 'babel-loader'
+        },
         // 预处理.ts文件
         /*{
           test: /\.tsx?$/,
