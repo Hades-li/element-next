@@ -1,23 +1,20 @@
 <template>
-  <img src="./logo.png">
-  <h1>Hello Vue 3!</h1>
-  <button @click="inc">Clicked {{ count }} times.</button>
+  <button @click="pushTo('/')">home</button>
+  <button @click="pushTo('/about')">about</button>
+  <router-view></router-view>
 </template>
 
 <script>
 import { ref } from 'vue'
-
+import { useRouter } from 'vue-router'
 export default {
   setup(props, ctx) {
-    const count = ref(0)
-    const inc = () => {
-      count.value++
+    const router = useRouter()
+    const pushTo = (path) => {
+      router.push(path)
     }
-    console.log(ctx)
-
     return {
-      count,
-      inc
+      pushTo
     }
   }
 }

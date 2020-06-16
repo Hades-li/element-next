@@ -77,7 +77,7 @@ module.exports = (env, argv) => {
         },
         // 预处理图片
         {
-          test: /\.(png|jpe?g|gif|webp)(\?.*)?$/,
+          test: /\.(svg|otf|ttf|woff2?|eot|png|jpe?g|gif|webp)(\?.*)?$/,
           loader: 'url-loader',
           options: {
             limit: 4096,
