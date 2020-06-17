@@ -48,7 +48,7 @@ export default {
         { 'el-row--flex': props.type === 'flex' }
       ],
       style
-    }, ctx.slots);
+    }, ctx.slots.default());
   },
   /*computed: {
     style() {

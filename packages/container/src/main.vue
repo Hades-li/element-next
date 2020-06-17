@@ -5,6 +5,8 @@
 </template>
 
 <script>
+  import { computed } from 'vue'
+
   export default {
     name: 'ElContainer',
 
@@ -14,7 +16,29 @@
       direction: String
     },
 
-    computed: {
+    setup(props, ctx) {
+      const isVertical = computed(() => {
+        if (props.direction === 'vertical') {
+          return true;
+        } else if (props.direction === 'horizontal') {
+          return false;
+        }
+        const slots = ctx.slots.default()
+        return slots.length > 0
+          ? slots.some(vnode => {
+            const tag = vnode.type && vnode.type.name;
+            return tag === 'ElHeader' || tag === 'ElFooter';
+          })
+          : false;
+      })
+      console.log(isVertical.value)
+
+      return {
+        isVertical
+      }
+    },
+
+    /*computed: {
       isVertical() {
         if (this.direction === 'vertical') {
           return true;
@@ -28,6 +52,6 @@
           })
           : false;
       }
-    }
+    }*/
   };
 </script>

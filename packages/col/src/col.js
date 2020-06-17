@@ -65,7 +65,7 @@ export default {
       return h(props.tag, {
         class: ['el-col', classList],
         style
-      }, ctx.slots);
+      }, ctx.slots.default());
     }
   },
 
