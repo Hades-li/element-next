@@ -1,4 +1,5 @@
-import { computed,h } from 'vue'
+import { computed,h, inject } from 'vue'
+import {useGutter} from '../../row/src/row'
 
 export default {
   name: 'ElCol',
@@ -22,19 +23,17 @@ export default {
     xl: [Number, Object]
   },
   setup(props, ctx){
+    const gutterRow = useGutter()
     const gutter = computed(() => {
-      let parent = this.$parent;
-      while (parent && parent.$options.componentName !== 'ElRow') {
-        parent = parent.$parent;
-      }
-      return parent ? parent.gutter : 0;
+      return gutterRow ? gutterRow : 0;
     })
+
     return () => {
       let classList = [];
       let style = {};
 
-      if (gutter) {
-        style.paddingLeft = gutter / 2 + 'px';
+      if (gutter.value) {
+        style.paddingLeft = gutter.value / 2 + 'px';
         style.paddingRight = style.paddingLeft;
       }
 

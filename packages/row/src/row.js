@@ -1,5 +1,11 @@
-import {computed, h} from 'vue'
+import {computed, h, provide, inject} from 'vue'
 
+// 常量
+const gutterSymbol = Symbol()
+
+export function useGutter() {
+  return inject(gutterSymbol)
+}
 export default {
   name: 'ElRow',
 
@@ -25,15 +31,15 @@ export default {
     const style = () => computed(() => {
       const ret = {}
 
-      if (this.gutter) {
+      if (props.gutter) {
         ret.marginLeft = `-${props.gutter / 2}px`
         ret.marginRight = ret.marginLeft
       }
 
       return ret
     })
-    const tag = props.tag
-    // const slots = ctx.slots
+    provide(gutterSymbol, props.gutter)
+
     return () => h(props.tag, {
       class: [
         'el-row',
