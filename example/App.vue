@@ -1,6 +1,6 @@
 <template>
-  <button @click="pushTo('/')">home</button>
-  <button @click="pushTo('/about')">about</button>
+  <button @click="pushTo('/')">button</button>
+  <button @click="pushTo('/layout')">layout</button>
   <router-view></router-view>
 </template>
 

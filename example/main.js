@@ -7,5 +7,7 @@ import 'src/theme-chalk/src/index.scss'
 createApp(App)
   .use(router)
   .use(store)
-  .use(ele)
+  .use(ele, {
+    size: 'small'
+  })
   .mount('#app')

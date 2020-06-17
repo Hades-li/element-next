@@ -1,5 +1,5 @@
 # update history
 ### components
-- Button: 缺少一个全局变量 90%
+- Button: 100%
 - Row: 100%
-- Col: 0%
+- Col: 100%

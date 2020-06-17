@@ -1,3 +1,5 @@
+import { computed,h } from 'vue'
+
 export default {
   name: 'ElCol',
 
@@ -19,8 +21,56 @@ export default {
     lg: [Number, Object],
     xl: [Number, Object]
   },
+  setup(props, ctx){
+    const gutter = computed(() => {
+      let parent = this.$parent;
+      while (parent && parent.$options.componentName !== 'ElRow') {
+        parent = parent.$parent;
+      }
+      return parent ? parent.gutter : 0;
+    })
+    return () => {
+      let classList = [];
+      let style = {};
 
-  computed: {
+      if (gutter) {
+        style.paddingLeft = gutter / 2 + 'px';
+        style.paddingRight = style.paddingLeft;
+      }
+
+      ['span', 'offset', 'pull', 'push'].forEach(prop => {
+        if (props[prop] || props[prop] === 0) {
+          classList.push(
+            prop !== 'span'
+              ? `el-col-${prop}-${props[prop]}`
+              : `el-col-${props[prop]}`
+          );
+        }
+      });
+
+      ['xs', 'sm', 'md', 'lg', 'xl'].forEach(size => {
+        if (typeof props[size] === 'number') {
+          classList.push(`el-col-${size}-${props[size]}`);
+        } else if (typeof props[size] === 'object') {
+          let props = props[size];
+          Object.keys(props).forEach(prop => {
+            classList.push(
+              prop !== 'span'
+                ? `el-col-${size}-${prop}-${props[prop]}`
+                : `el-col-${size}-${props[prop]}`
+            );
+          });
+        }
+      });
+
+      return h(props.tag, {
+        class: ['el-col', classList],
+        style
+      }, ctx.slots);
+    }
+  },
+
+  /*computed: {
     gutter() {
       let parent = this.$parent;
       while (parent && parent.$options.componentName !== 'ElRow') {
@@ -28,8 +78,8 @@ export default {
       }
       return parent ? parent.gutter : 0;
     }
-  },
-  render(h) {
+  },*/
+  /*render(h) {
     let classList = [];
     let style = {};
 
@@ -67,5 +117,5 @@ export default {
       class: ['el-col', classList],
       style
     }, this.$slots.default);
-  }
+  }*/
 };

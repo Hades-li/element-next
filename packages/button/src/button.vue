@@ -24,6 +24,8 @@
 </template>
 <script>
   import { computed, inject } from 'vue'
+  import { useELEMENT } from '../../../src'
+
   export default {
     name: 'ElButton',
     props: {
@@ -51,17 +53,20 @@
       // inject
       const elForm = inject('elForm', '')
       const elFormItem = inject('elFormItem', '')
+      const ELEMENT = useELEMENT()
 
       // computed
       const _elFormItemSize = computed(() => {
         return (elFormItem || {}).elFormItemSize
       })
       const buttonSize = computed(() => {
-        return props.size || _elFormItemSize
+        return props.size || _elFormItemSize.value || (ELEMENT || {}).size
       })
       const buttonDisabled = computed(() => {
         return props.disabled || (elForm || {}).disabled
       })
+
+      console.log(buttonSize.value)
 
       //methods
       const handleClick = (evt) => {
