@@ -3,13 +3,14 @@
     :is="_elTag"
     class="el-radio-group"
     role="radiogroup"
+    @handle-change="change"
     @keydown="handleKeydown"
   >
     <slot></slot>
   </component>
 </template>
 <script>
-  import { computed, provide, inject } from 'vue'
+  import { computed, provide, inject, watchEffect, readonly } from 'vue'
   import Emitter from 'src/mixins/emitter';
 
   const keyCode = Object.freeze({
@@ -35,30 +36,47 @@
 
     componentName: 'ElRadioGroup',
 
-    inject: {
+    /*inject: {
       elFormItem: {
         default: ''
       }
-    },
+    },*/
 
     mixins: [Emitter],
 
     props: {
-      value: {},
+      modelValue: {},
       size: String,
       fill: String,
       textColor: String,
       disabled: Boolean
     },
-    setup(props, ctx) {
-      console.log(props.value)
+    setup(props, ctx,) {
+      console.log(ctx.root)
+      const elFormItem = inject('elFormItem', '')
+      const modelVal = readonly(props.modelValue)
+      const _elFormItemSize = computed(() => {
+        return (elFormItem || {}).elFormItemSize;
+      })
+
+      watchEffect(() => {
+        // this.dispatch('ElFormItem', 'el.form.change', [this.value]);
+      })
+
+      const change = value => {
+        ctx.emit('onUpdate:modelValue', value)
+      }
+
       provide(NAME, 'ElRadioGroup')
-      provide(MODEL, props.value)
+      provide(MODEL, props.modelValue)
+      return {
+        change
+      }
     },
     computed: {
-      _elFormItemSize() {
+      /*_elFormItemSize() {
         return (this.elFormItem || {}).elFormItemSize;
-      },
+      },*/
       _elTag() {
         return (this.$vnode.data || {}).tag || 'div';
       },
@@ -68,9 +86,9 @@
     },
 
     created() {
-      this.$on('handleChange', value => {
+      /*this.$on('handleChange', value => {
         this.$emit('change', value);
-      });
+      });*/
     },
     mounted() {
       // 当radioGroup没有默认选项时，第一个可以选中Tab导航
@@ -119,9 +137,9 @@
       }
     },
     watch: {
-      value(value) {
+      /*value(value) {
         this.dispatch('ElFormItem', 'el.form.change', [this.value]);
-      }
+      }*/
     }
   };
 </script>
