@@ -17,21 +17,25 @@
     },
 
     setup(props, ctx) {
+      const slots = ctx.slots.default()
       const isVertical = computed(() => {
         if (props.direction === 'vertical') {
           return true;
         } else if (props.direction === 'horizontal') {
           return false;
+        } else {
+          // debugger
+          // console.log(slots)
+          //debug const slots = ctx.slots.default()
+
+          return slots.length > 0
+            ? slots.some(vnode => {
+              const name = vnode.type && vnode.type.name;
+              return name === 'ElHeader' || name === 'ElFooter';
+            })
+            : false;
         }
-        const slots = ctx.slots.default()
-        return slots.length > 0
-          ? slots.some(vnode => {
-            const tag = vnode.type && vnode.type.name;
-            return tag === 'ElHeader' || tag === 'ElFooter';
-          })
-          : false;
       })
-      console.log(isVertical.value)
 
       return {
         isVertical

@@ -12,9 +12,9 @@ import { provide, inject } from 'vue'
 // import MenuItemGroup from '../packages/menu-item-group/index.js';
 // import Input from '../packages/input/index.js';
 // import InputNumber from '../packages/input-number/index.js';
-// import Radio from '../packages/radio/index.js';
-// import RadioGroup from '../packages/radio-group/index.js';
-// import RadioButton from '../packages/radio-button/index.js';
+import Radio from '../packages/radio/index.js';
+import RadioGroup from '../packages/radio-group/index.js';
+import RadioButton from '../packages/radio-button/index.js';
 // import Checkbox from '../packages/checkbox/index.js';
 // import CheckboxButton from '../packages/checkbox-button/index.js';
 // import CheckboxGroup from '../packages/checkbox-group/index.js';
@@ -71,7 +71,7 @@ import Main from '../packages/main/index.js';
 import Footer from '../packages/footer/index.js';
 // import Timeline from '../packages/timeline/index.js';
 // import TimelineItem from '../packages/timeline-item/index.js';
-// import Link from '../packages/link/index.js';
+import Link from '../packages/link/index.js';
 // import Divider from '../packages/divider/index.js';
 // import Image from '../packages/image/index.js';
 // import Calendar from '../packages/calendar/index.js';
@@ -97,9 +97,9 @@ const components = [
   // MenuItemGroup,
   // Input,
   // InputNumber,
-  // Radio,
-  // RadioGroup,
-  // RadioButton,
+  Radio,
+  RadioGroup,
+  RadioButton,
   // Checkbox,
   // CheckboxButton,
   // CheckboxGroup,
@@ -152,7 +152,7 @@ const components = [
   Footer,
   // Timeline,
   // TimelineItem,
-  // Link,
+  Link,
   // Divider,
   // Image,
   // Calendar,
