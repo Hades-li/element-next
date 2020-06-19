@@ -43,7 +43,7 @@
   </label>
 </template>
 <script>
-import { ref, computed, vModelRadio } from 'vue'
+import { ref, computed } from 'vue'
 import { useName } from './radio-group'
 import Emitter from 'src/mixins/emitter'
 
@@ -95,9 +95,9 @@ export default {
       },
       set(val) {
         if (this.isGroup) {
-          this.dispatch('ElRadioGroup', 'input', [val])
+          // this.dispatch('ElRadioGroup', 'input', [val])
         } else {
-          this.$emit('input', val)
+          ctx.emit('update:modelValue', val)
         }
         this.$refs.radio && (this.$refs.radio.checked = this.model === this.label)
       }
@@ -127,7 +127,7 @@ export default {
       }
       return false;
     },*/
-    model: {
+    /*model: {
       get () {
         return this.isGroup ? this._radioGroup.value : this.value
       },
@@ -139,7 +139,7 @@ export default {
         }
         this.$refs.radio && (this.$refs.radio.checked = this.model === this.label)
       }
-    },
+    },*/
     _elFormItemSize () {
       return (this.elFormItem || {}).elFormItemSize
     },
