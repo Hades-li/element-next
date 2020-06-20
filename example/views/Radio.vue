@@ -1,15 +1,23 @@
 <template>
   <div class="radio">
     <h3>radio</h3>
-    <el-radio-group v-model="radio">
-      <el-radio label="1">1</el-radio>
-      <el-radio label="2">2</el-radio>
-    </el-radio-group>
+    <div>
+      <el-radio-group v-model="radio">
+        <el-radio label="1">1号</el-radio>
+        <el-radio label="2">2号</el-radio>
+      </el-radio-group>
+    </div>
+    <div>
+      <el-radio-group v-model="radio_2">
+        <el-radio label="3">3号</el-radio>
+        <el-radio label="4">4号</el-radio>
+      </el-radio-group>
+    </div>
   </div>
 </template>
 
 <script>
-import {ref} from 'vue'
+import {ref, watchEffect} from 'vue'
 import ElRadio from '../../packages/radio/src/radio'
 
 export default {
@@ -17,8 +25,16 @@ export default {
   components: { ElRadio },
   setup() {
     const radio = ref('1')
+    const radio_2 = ref('3')
+    watchEffect(() => {
+      console.log('curRadio:' + radio.value)
+    })
+    watchEffect(() => {
+      console.log('curRadio_2:' + radio_2.value)
+    })
     return {
-      radio
+      radio,
+      radio_2
     }
   }
 }
