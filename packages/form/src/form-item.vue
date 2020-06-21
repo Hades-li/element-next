@@ -39,11 +39,19 @@
   </div>
 </template>
 <script>
-  import AsyncValidator from 'async-validator';
-  import emitter from 'element-ui/src/mixins/emitter';
-  import objectAssign from 'element-ui/src/utils/merge';
-  import { noop, getPropByPath } from 'element-ui/src/utils/util';
-  import LabelWrap from './label-wrap';
+  import {provide, inject, getCurrentInstance} from 'vue'
+  import AsyncValidator from 'async-validator'
+  import emitter from 'src/mixins/emitter'
+  import objectAssign from 'src/utils/merge'
+  import {noop, getPropByPath} from 'src/utils/util'
+  import LabelWrap from './label-wrap'
+
+  const ELFORMITEMSYMBOL = Symbol('elFormItem')
+
+  export function useElFormItem() {
+    return inject(ELFORMITEMSYMBOL)
+  }
+
   export default {
     name: 'ElFormItem',
 
@@ -51,11 +59,11 @@
 
     mixins: [emitter],
 
-    provide() {
+    /*provide() {
       return {
         elFormItem: this
       };
-    },
+    },*/
 
     inject: ['elForm'],
 
@@ -85,94 +93,100 @@
       // use this component to calculate auto width
       LabelWrap
     },
+    setup(props, ctx) {
+      const instance = getCurrentInstance()
+      provide(ELFORMITEMSYMBOL, instance)
+    },
     watch: {
       error: {
         immediate: true,
         handler(value) {
-          this.validateMessage = value;
-          this.validateState = value ? 'error' : '';
+          this.validateMessage = value
+          this.validateState = value ? 'error' : ''
         }
       },
       validateStatus(value) {
-        this.validateState = value;
+        this.validateState = value
       }
     },
     computed: {
       labelFor() {
-        return this.for || this.prop;
+        return this.for || this.prop
       },
       labelStyle() {
-        const ret = {};
-        if (this.form.labelPosition === 'top') return ret;
-        const labelWidth = this.labelWidth || this.form.labelWidth;
+        const ret = {}
+        if (this.form.labelPosition === 'top') return ret
+        const labelWidth = this.labelWidth || this.form.labelWidth
         if (labelWidth) {
-          ret.width = labelWidth;
+          ret.width = labelWidth
         }
-        return ret;
+        return ret
       },
       contentStyle() {
-        const ret = {};
-        const label = this.label;
-        if (this.form.labelPosition === 'top' || this.form.inline) return ret;
-        if (!label && !this.labelWidth && this.isNested) return ret;
-        const labelWidth = this.labelWidth || this.form.labelWidth;
+        const ret = {}
+        const label = this.label
+        if (this.form.labelPosition === 'top' || this.form.inline) return ret
+        if (!label && !this.labelWidth && this.isNested) return ret
+        const labelWidth = this.labelWidth || this.form.labelWidth
         if (labelWidth === 'auto') {
           if (this.labelWidth === 'auto') {
-            ret.marginLeft = this.computedLabelWidth;
+            ret.marginLeft = this.computedLabelWidth
           } else if (this.form.labelWidth === 'auto') {
-            ret.marginLeft = this.elForm.autoLabelWidth;
+            ret.marginLeft = this.elForm.autoLabelWidth
           }
         } else {
-          ret.marginLeft = labelWidth;
+          ret.marginLeft = labelWidth
         }
-        return ret;
+        return ret
       },
       form() {
-        let parent = this.$parent;
-        let parentName = parent.$options.componentName;
+        let parent = this.$parent
+        let parentName = parent.$options.componentName
         while (parentName !== 'ElForm') {
           if (parentName === 'ElFormItem') {
-            this.isNested = true;
+            this.isNested = true
           }
-          parent = parent.$parent;
-          parentName = parent.$options.componentName;
+          parent = parent.$parent
+          parentName = parent.$options.componentName
         }
-        return parent;
+        return parent
       },
       fieldValue() {
-        const model = this.form.model;
-        if (!model || !this.prop) { return; }
-
-        let path = this.prop;
-        if (path.indexOf(':') !== -1) {
-          path = path.replace(/:/, '.');
+        const model = this.form.model
+        if (!model || !this.prop) {
+          return
         }
 
-        return getPropByPath(model, path, true).v;
+        let path = this.prop
+        if (path.indexOf(':') !== -1) {
+          path = path.replace(/:/, '.')
+        }
+
+        return getPropByPath(model, path, true).v
       },
       isRequired() {
-        let rules = this.getRules();
-        let isRequired = false;
+        let rules = this.getRules()
+        let isRequired = false
 
         if (rules && rules.length) {
           rules.every(rule => {
             if (rule.required) {
-              isRequired = true;
-              return false;
+              isRequired = true
+              return false
             }
-            return true;
-          });
+            return true
+          })
         }
-        return isRequired;
+        return isRequired
       },
       _formSize() {
-        return this.elForm.size;
+        return this.elForm.size
       },
       elFormItemSize() {
-        return this.size || this._formSize;
+        return this.size || this._formSize
       },
       sizeClass() {
-        return this.elFormItemSize || (this.$ELEMENT || {}).size;
+        return this.elFormItemSize || (this.$ELEMENT || {}).size
       }
     },
     data() {
@@ -183,137 +197,137 @@
         validator: {},
         isNested: false,
         computedLabelWidth: ''
-      };
+      }
     },
     methods: {
       validate(trigger, callback = noop) {
-        this.validateDisabled = false;
-        const rules = this.getFilteredRule(trigger);
+        this.validateDisabled = false
+        const rules = this.getFilteredRule(trigger)
         if ((!rules || rules.length === 0) && this.required === undefined) {
-          callback();
-          return true;
+          callback()
+          return true
         }
 
-        this.validateState = 'validating';
+        this.validateState = 'validating'
 
-        const descriptor = {};
+        const descriptor = {}
         if (rules && rules.length > 0) {
           rules.forEach(rule => {
-            delete rule.trigger;
-          });
+            delete rule.trigger
+          })
         }
-        descriptor[this.prop] = rules;
+        descriptor[this.prop] = rules
 
-        const validator = new AsyncValidator(descriptor);
-        const model = {};
+        const validator = new AsyncValidator(descriptor)
+        const model = {}
 
-        model[this.prop] = this.fieldValue;
+        model[this.prop] = this.fieldValue
 
-        validator.validate(model, { firstFields: true }, (errors, invalidFields) => {
-          this.validateState = !errors ? 'success' : 'error';
-          this.validateMessage = errors ? errors[0].message : '';
+        validator.validate(model, {firstFields: true}, (errors, invalidFields) => {
+          this.validateState = !errors ? 'success' : 'error'
+          this.validateMessage = errors ? errors[0].message : ''
 
-          callback(this.validateMessage, invalidFields);
-          this.elForm && this.elForm.$emit('validate', this.prop, !errors, this.validateMessage || null);
-        });
+          callback(this.validateMessage, invalidFields)
+          this.elForm && this.elForm.$emit('validate', this.prop, !errors, this.validateMessage || null)
+        })
       },
       clearValidate() {
-        this.validateState = '';
-        this.validateMessage = '';
-        this.validateDisabled = false;
+        this.validateState = ''
+        this.validateMessage = ''
+        this.validateDisabled = false
       },
       resetField() {
-        this.validateState = '';
-        this.validateMessage = '';
+        this.validateState = ''
+        this.validateMessage = ''
 
-        let model = this.form.model;
-        let value = this.fieldValue;
-        let path = this.prop;
+        let model = this.form.model
+        let value = this.fieldValue
+        let path = this.prop
         if (path.indexOf(':') !== -1) {
-          path = path.replace(/:/, '.');
+          path = path.replace(/:/, '.')
         }
 
-        let prop = getPropByPath(model, path, true);
+        let prop = getPropByPath(model, path, true)
 
-        this.validateDisabled = true;
+        this.validateDisabled = true
         if (Array.isArray(value)) {
-          prop.o[prop.k] = [].concat(this.initialValue);
+          prop.o[prop.k] = [].concat(this.initialValue)
         } else {
-          prop.o[prop.k] = this.initialValue;
+          prop.o[prop.k] = this.initialValue
         }
 
         // reset validateDisabled after onFieldChange triggered
         this.$nextTick(() => {
-          this.validateDisabled = false;
-        });
+          this.validateDisabled = false
+        })
 
-        this.broadcast('ElTimeSelect', 'fieldReset', this.initialValue);
+        this.broadcast('ElTimeSelect', 'fieldReset', this.initialValue)
       },
       getRules() {
-        let formRules = this.form.rules;
-        const selfRules = this.rules;
-        const requiredRule = this.required !== undefined ? { required: !!this.required } : [];
+        let formRules = this.form.rules
+        const selfRules = this.rules
+        const requiredRule = this.required !== undefined ? {required: !!this.required} : []
 
-        const prop = getPropByPath(formRules, this.prop || '');
-        formRules = formRules ? (prop.o[this.prop || ''] || prop.v) : [];
+        const prop = getPropByPath(formRules, this.prop || '')
+        formRules = formRules ? (prop.o[this.prop || ''] || prop.v) : []
 
-        return [].concat(selfRules || formRules || []).concat(requiredRule);
+        return [].concat(selfRules || formRules || []).concat(requiredRule)
       },
       getFilteredRule(trigger) {
-        const rules = this.getRules();
+        const rules = this.getRules()
 
         return rules.filter(rule => {
-          if (!rule.trigger || trigger === '') return true;
+          if (!rule.trigger || trigger === '') return true
           if (Array.isArray(rule.trigger)) {
-            return rule.trigger.indexOf(trigger) > -1;
+            return rule.trigger.indexOf(trigger) > -1
           } else {
-            return rule.trigger === trigger;
+            return rule.trigger === trigger
           }
-        }).map(rule => objectAssign({}, rule));
+        }).map(rule => objectAssign({}, rule))
       },
       onFieldBlur() {
-        this.validate('blur');
+        this.validate('blur')
       },
       onFieldChange() {
         if (this.validateDisabled) {
-          this.validateDisabled = false;
-          return;
+          this.validateDisabled = false
+          return
         }
 
-        this.validate('change');
+        this.validate('change')
       },
       updateComputedLabelWidth(width) {
-        this.computedLabelWidth = width ? `${width}px` : '';
+        this.computedLabelWidth = width ? `${width}px` : ''
       },
       addValidateEvents() {
-        const rules = this.getRules();
+        const rules = this.getRules()
 
         if (rules.length || this.required !== undefined) {
-          this.$on('el.form.blur', this.onFieldBlur);
-          this.$on('el.form.change', this.onFieldChange);
+          this.$on('el.form.blur', this.onFieldBlur)
+          this.$on('el.form.change', this.onFieldChange)
         }
       },
       removeValidateEvents() {
-        this.$off();
+        this.$off()
       }
     },
     mounted() {
       if (this.prop) {
-        this.dispatch('ElForm', 'el.form.addField', [this]);
+        this.dispatch('ElForm', 'el.form.addField', [this])
 
-        let initialValue = this.fieldValue;
+        let initialValue = this.fieldValue
         if (Array.isArray(initialValue)) {
-          initialValue = [].concat(initialValue);
+          initialValue = [].concat(initialValue)
         }
         Object.defineProperty(this, 'initialValue', {
           value: initialValue
-        });
+        })
 
-        this.addValidateEvents();
+        this.addValidateEvents()
       }
     },
     beforeDestroy() {
-      this.dispatch('ElForm', 'el.form.removeField', [this]);
+      this.dispatch('ElForm', 'el.form.removeField', [this])
     }
-  };
+  }
 </script>

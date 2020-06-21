@@ -86,7 +86,7 @@
       // data
       const focus = ref(false)
       const parent = useRadioGroup()
-      console.log(parent)
+      // console.log(parent)
       // computed
       const isGroup = computed(() => {
         // let parent = this.$parent;
@@ -120,7 +120,7 @@
         },
         set(val) {
           if (isGroup.value) {
-            parent.emit(val)
+            _radioGroup.emit(val)
             // this.dispatch('ElRadioGroup', 'input', [val])
           } else {
             ctx.emit('update:modelValue', val)
@@ -132,7 +132,7 @@
       // methods
       function handleChange() {
         nextTick(() => {
-          ctx.emit('change', model)
+          ctx.emit('changeValue', model.value)
           // isGroup.value && this.dispatch('ElRadioGroup', 'handleChange', model.value)
         })
       }

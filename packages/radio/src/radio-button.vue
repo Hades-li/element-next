@@ -35,12 +35,16 @@
   </label>
 </template>
 <script>
-  import Emitter from 'src/mixins/emitter';
+  import {useELEMENT} from "src"
+  import {computed, nextTick, ref} from "vue"
+  import {useElForm} from "packages/form/src/form"
+  import {useElFormItem} from "packages/form/src/form-item"
+  import { useRadioGroup } from "./radio-group"
 
   export default {
     name: 'ElRadioButton',
 
-    mixins: [Emitter],
+    // mixins: [Emitter],
 
     inject: {
       elForm: {
@@ -56,7 +60,69 @@
       disabled: Boolean,
       name: String
     },
-    data() {
+    setup(props, ctx) {
+// computed
+      const ELEMENT = useELEMENT()
+      const elForm = useElForm()
+      const elFormItem = useElForm()
+      const _radioGroup = useRadioGroup()
+      // data
+      const focus = ref(false)
+      // computed
+      const isGroup = computed(() => {
+        if (_radioGroup && _radioGroup.name === 'ElRadioGroup') {
+          return true
+        }
+        return false
+      })
+      const _elFormItemSize = computed(() => {
+        return (elFormItem || {}).elFormItemSize
+      })
+      const size = computed(() => {
+        return _radioGroup.radioGroupSize || _elFormItemSize || (ELEMENT || {}).size;
+      })
+      const isDisabled = computed(() => {
+        return props.disabled || _radioGroup.disabled || (elForm || {}).disabled;
+      })
+      const tabIndex = computed(() => {
+        return (isDisabled || (_radioGroup && value.value !== props.label)) ? -1 : 0;
+      })
+      const value = computed({
+        get() {
+          return _radioGroup.modelValue.value;
+        },
+        set(value) {
+          _radioGroup.emit(value);
+        }
+      })
+      const activeStyle = computed(() => {
+        return {
+          backgroundColor: _radioGroup.fill || '',
+          borderColor: _radioGroup.fill || '',
+          boxShadow: _radioGroup.fill ? `-1px 0 0 0 ${_radioGroup.fill}` : '',
+          color: _radioGroup.textColor || ''
+        }
+      })
+
+      // methods
+      const handleChange = () => {
+        nextTick(() => {
+          // this.dispatch('ElRadioGroup', 'handleChange', this.value);
+        });
+      }
+
+      return {
+        isGroup,
+        size,
+        isDisabled,
+        tabIndex,
+        value,
+        focus,
+        activeStyle,
+        handleChange
+      }
+    },
+    /*data() {
       return {
         focus: false
       };
@@ -109,6 +175,6 @@
           this.dispatch('ElRadioGroup', 'handleChange', this.value);
         });
       }
-    }
+    }*/
   };
 </script>

@@ -16,6 +16,7 @@ module.exports = (env, argv) => {
       alias: {
         '@': resolve('example'),
         src: resolve('src'),
+        packages: resolve('packages'),
         // vue$: 'vue/dist/vue.runtime.esm.js'
       },
       extensions: [

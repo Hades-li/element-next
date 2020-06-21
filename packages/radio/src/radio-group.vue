@@ -3,7 +3,6 @@
     :is="_elTag"
     class="el-radio-group"
     role="radiogroup"
-    @handle-change="change"
     @keydown="handleKeydown"
   >
     <slot></slot>
@@ -11,9 +10,9 @@
 </template>
 <script>
   import {
-    ref,
+    nextTick,
     computed,
-    provide, inject, watchEffect, readonly, getCurrentInstance, onMounted
+    provide, inject, watchEffect, getCurrentInstance, onMounted
   } from 'vue'
   import Emitter from 'src/mixins/emitter'
   import {useELEMENT} from 'src/index'
@@ -70,7 +69,7 @@
           return props.modelValue
         },
         set(val) {
-          change(val)
+          changeEvent(val)
         }
       })
       watchEffect(() => {
@@ -78,8 +77,11 @@
       })
 
       // methods
-      const change = value => {
+      const changeEvent = value => {
         ctx.emit('update:modelValue', value)
+        nextTick(() => {
+          ctx.emit('changeValue', value)
+        })
       }
 
       const handleKeydown = (e) => { // 左右上下按键 可以在radio组内切换不同选项
@@ -119,15 +121,15 @@
         }
       }
 
-      const exportData = {
+      provide(RADIOGROUP, {
         name: 'ElRadioGroup',
         modelValue,
-        emit: change
-      }
-
-      // provide(NAME, 'ElRadioGroup')
-      // provide(MODEL, props.modelValue)
-      provide(RADIOGROUP, exportData)
+        fill: props.fill,
+        textColor: props.textColor,
+        radioGroupSize: props.size,
+        disabled: props.disabled,
+        emit: changeEvent
+      })
 
       onMounted(() => {
         const radios = instance.vnode.el.querySelectorAll('[type=radio]')
@@ -137,7 +139,7 @@
         }
       })
       return {
-        change,
+        // changeEvent,
         handleKeydown,
         radioGroupSize,
         _elTag

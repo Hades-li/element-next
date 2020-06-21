@@ -1,7 +1,6 @@
 <template>
   <button
     class="el-button"
-    @click="handleClick"
     :disabled="buttonDisabled || loading"
     :autofocus="autofocus"
     :type="nativeType"
@@ -66,15 +65,9 @@
         return props.disabled || (elForm || {}).disabled
       })
 
-      //methods
-      const handleClick = (evt) => {
-        ctx.emit('click', evt)
-      }
-
       return {
         buttonSize,
-        buttonDisabled,
-        handleClick
+        buttonDisabled
       }
     },
     /*inject: {

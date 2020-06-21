@@ -7,18 +7,25 @@
   </form>
 </template>
 <script>
-  import objectAssign from 'element-ui/src/utils/merge';
+  import {provide, inject, getCurrentInstance} from 'vue'
+  import objectAssign from 'src/utils/merge'
+
+  const ELFORMSYMBOL = Symbol('ElForm')
+
+  export function useElForm() {
+    return inject(ELFORMSYMBOL)
+  }
 
   export default {
     name: 'ElForm',
 
     componentName: 'ElForm',
 
-    provide() {
+    /*provide() {
       return {
         elForm: this
-      };
-    },
+      }
+    },*/
 
     props: {
       model: Object,
@@ -47,136 +54,141 @@
         default: false
       }
     },
+    setup(props,ctx) {
+      const instance = getCurrentInstance()
+      provide(ELFORMSYMBOL, instance)
+    },
     watch: {
       rules() {
         // remove then add event listeners on form-item after form rules change
         this.fields.forEach(field => {
-          field.removeValidateEvents();
-          field.addValidateEvents();
-        });
+          field.removeValidateEvents()
+          field.addValidateEvents()
+        })
 
         if (this.validateOnRuleChange) {
-          this.validate(() => {});
+          this.validate(() => {
+          })
         }
       }
     },
     computed: {
       autoLabelWidth() {
-        if (!this.potentialLabelWidthArr.length) return 0;
-        const max = Math.max(...this.potentialLabelWidthArr);
-        return max ? `${max}px` : '';
+        if (!this.potentialLabelWidthArr.length) return 0
+        const max = Math.max(...this.potentialLabelWidthArr)
+        return max ? `${max}px` : ''
       }
     },
     data() {
       return {
         fields: [],
         potentialLabelWidthArr: [] // use this array to calculate auto width
-      };
+      }
     },
     created() {
       this.$on('el.form.addField', (field) => {
         if (field) {
-          this.fields.push(field);
+          this.fields.push(field)
         }
-      });
+      })
       /* istanbul ignore next */
       this.$on('el.form.removeField', (field) => {
         if (field.prop) {
-          this.fields.splice(this.fields.indexOf(field), 1);
+          this.fields.splice(this.fields.indexOf(field), 1)
         }
-      });
+      })
     },
     methods: {
       resetFields() {
         if (!this.model) {
-          console.warn('[Element Warn][Form]model is required for resetFields to work.');
-          return;
+          console.warn('[Element Warn][Form]model is required for resetFields to work.')
+          return
         }
         this.fields.forEach(field => {
-          field.resetField();
-        });
+          field.resetField()
+        })
       },
       clearValidate(props = []) {
         const fields = props.length
           ? (typeof props === 'string'
-            ? this.fields.filter(field => props === field.prop)
-            : this.fields.filter(field => props.indexOf(field.prop) > -1)
-          ) : this.fields;
+              ? this.fields.filter(field => props === field.prop)
+              : this.fields.filter(field => props.indexOf(field.prop) > -1)
+          ) : this.fields
         fields.forEach(field => {
-          field.clearValidate();
-        });
+          field.clearValidate()
+        })
       },
       validate(callback) {
         if (!this.model) {
-          console.warn('[Element Warn][Form]model is required for validate to work!');
-          return;
+          console.warn('[Element Warn][Form]model is required for validate to work!')
+          return
         }
 
-        let promise;
+        let promise
         // if no callback, return promise
         if (typeof callback !== 'function' && window.Promise) {
           promise = new window.Promise((resolve, reject) => {
-            callback = function(valid) {
-              valid ? resolve(valid) : reject(valid);
-            };
-          });
+            callback = function (valid) {
+              valid ? resolve(valid) : reject(valid)
+            }
+          })
         }
 
-        let valid = true;
-        let count = 0;
+        let valid = true
+        let count = 0
         // 如果需要验证的fields为空，调用验证时立刻返回callback
         if (this.fields.length === 0 && callback) {
-          callback(true);
+          callback(true)
         }
-        let invalidFields = {};
+        let invalidFields = {}
         this.fields.forEach(field => {
           field.validate('', (message, field) => {
             if (message) {
-              valid = false;
+              valid = false
             }
-            invalidFields = objectAssign({}, invalidFields, field);
+            invalidFields = objectAssign({}, invalidFields, field)
             if (typeof callback === 'function' && ++count === this.fields.length) {
-              callback(valid, invalidFields);
+              callback(valid, invalidFields)
             }
-          });
-        });
+          })
+        })
 
         if (promise) {
-          return promise;
+          return promise
         }
       },
       validateField(props, cb) {
-        props = [].concat(props);
-        const fields = this.fields.filter(field => props.indexOf(field.prop) !== -1);
+        props = [].concat(props)
+        const fields = this.fields.filter(field => props.indexOf(field.prop) !== -1)
         if (!fields.length) {
-          console.warn('[Element Warn]please pass correct props!');
-          return;
+          console.warn('[Element Warn]please pass correct props!')
+          return
         }
 
         fields.forEach(field => {
-          field.validate('', cb);
-        });
+          field.validate('', cb)
+        })
       },
       getLabelWidthIndex(width) {
-        const index = this.potentialLabelWidthArr.indexOf(width);
+        const index = this.potentialLabelWidthArr.indexOf(width)
         // it's impossible
         if (index === -1) {
-          throw new Error('[ElementForm]unpected width ', width);
+          throw new Error('[ElementForm]unpected width ', width)
         }
-        return index;
+        return index
       },
       registerLabelWidth(val, oldVal) {
         if (val && oldVal) {
-          const index = this.getLabelWidthIndex(oldVal);
-          this.potentialLabelWidthArr.splice(index, 1, val);
+          const index = this.getLabelWidthIndex(oldVal)
+          this.potentialLabelWidthArr.splice(index, 1, val)
         } else if (val) {
-          this.potentialLabelWidthArr.push(val);
+          this.potentialLabelWidthArr.push(val)
         }
       },
       deregisterLabelWidth(val) {
-        const index = this.getLabelWidthIndex(val);
-        this.potentialLabelWidthArr.splice(index, 1);
+        const index = this.getLabelWidthIndex(val)
+        this.potentialLabelWidthArr.splice(index, 1)
       }
     }
-  };
+  }
 </script>
