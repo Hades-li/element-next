@@ -30,6 +30,11 @@ const routes = [
     name: 'Radio',
     component: () => import(/* webpackChunkName: "link" */ '../views/Radio.vue')
   },
+  {
+    path: '/checked',
+    name: 'Check',
+    component: () => import(/* webpackChunkName: "link" */ '../views/Checked.vue')
+  },
 ]
 
 const router = createRouter({
