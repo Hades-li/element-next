@@ -39,12 +39,14 @@
   </div>
 </template>
 <script>
-  import {provide, inject, getCurrentInstance} from 'vue'
+  import {provide, inject, getCurrentInstance, computed, reactive} from 'vue'
   import AsyncValidator from 'async-validator'
   import emitter from 'src/mixins/emitter'
   import objectAssign from 'src/utils/merge'
   import {noop, getPropByPath} from 'src/utils/util'
   import LabelWrap from './label-wrap'
+  import {useElForm} from "./form";
+  import {useELEMENT} from "src/index";
 
   const ELFORMITEMSYMBOL = Symbol('elFormItem')
 
@@ -65,7 +67,7 @@
       };
     },*/
 
-    inject: ['elForm'],
+    // inject: ['elForm'],
 
     props: {
       label: String,
@@ -94,8 +96,116 @@
       LabelWrap
     },
     setup(props, ctx) {
+      const elForm = useElForm()
+      const ELEMENT = useELEMENT()
+      // const form = elForm
+
+      // data
+      const data = reactive({
+        validateState: '',
+        validateMessage: '',
+        validateDisabled: false,
+        validator: {},
+        isNested: false,
+        computedLabelWidth: ''
+      })
+      // methods
+      const getRules = () => {
+        let formRules = elForm.rules
+        const selfRules = props.rules
+        const requiredRule = props.required !== undefined ? {required: !!props.required} : []
+
+        const prop = getPropByPath(formRules, props.prop || '')
+        formRules = formRules ? (prop.o[props.prop || ''] || prop.v) : []
+
+        return [].concat(selfRules || formRules || []).concat(requiredRule)
+      }
+      // computed
+      const _formSize = computed(() => {
+        return elForm.size
+      })
+      const elFormItemSize = computed(() => {
+        return props.size || _formSize
+      })
+      const sizeClass = computed(() => {
+        return elFormItemSize || (ELEMENT || {}).size
+      })
+      const labelFor = computed(() => {
+        return props.for || props.prop
+      })
+      const labelStyle = computed(() => {
+        const ret = {}
+        if (form.labelPosition === 'top') return ret
+        const labelWidth = props.labelWidth || elForm.labelWidth
+        if (labelWidth) {
+          ret.width = labelWidth
+        }
+        return ret
+      })
+
+      const contentStyle = computed(() => {
+        const ret = {}
+        const label = props.label
+        if (elForm.labelPosition === 'top' || elForm.inline) return ret
+        if (!label && !props.labelWidth && data.isNested) return ret
+        const labelWidth = props.labelWidth || elForm.labelWidth
+        if (labelWidth === 'auto') {
+          if (props.labelWidth === 'auto') {
+            ret.marginLeft = data.computedLabelWidth
+          } else if (elForm.labelWidth === 'auto') {
+            ret.marginLeft = elForm.autoLabelWidth
+          }
+        } else {
+          ret.marginLeft = labelWidth
+        }
+        return ret
+      })
+      const fieldValue = computed(() => {
+        const model = elForm.model
+        if (!model || !props.prop) {
+          return
+        }
+
+        let path = props.prop
+        if (path.indexOf(':') !== -1) {
+          path = path.replace(/:/, '.')
+        }
+
+        return getPropByPath(model, path, true).v
+      })
+      // console.log(getRules)
+      const isRequired = computed(() => {
+        let rules = getRules()
+        let isRequired = false
+
+        if (rules && rules.length) {
+          rules.every(rule => {
+            if (rule.required) {
+              isRequired = true
+              return false
+            }
+            return true
+          })
+        }
+        return isRequired
+      })
+
       const instance = getCurrentInstance()
-      provide(ELFORMITEMSYMBOL, instance)
+      provide(ELFORMITEMSYMBOL, {
+        instance,
+        elFormItemSize: elFormItemSize.value
+      })
+
+      return {
+        sizeClass,
+        labelFor,
+        labelStyle,
+        contentStyle,
+        fieldValue,
+        isRequired,
+        elForm,
+        validateState: data.validateState
+      }
     },
     watch: {
       error: {
@@ -110,10 +220,10 @@
       }
     },
     computed: {
-      labelFor() {
+      /*labelFor() {
         return this.for || this.prop
-      },
-      labelStyle() {
+      },*/
+      /*labelStyle() {
         const ret = {}
         if (this.form.labelPosition === 'top') return ret
         const labelWidth = this.labelWidth || this.form.labelWidth
@@ -121,8 +231,8 @@
           ret.width = labelWidth
         }
         return ret
-      },
-      contentStyle() {
+      },*/
+      /*contentStyle() {
         const ret = {}
         const label = this.label
         if (this.form.labelPosition === 'top' || this.form.inline) return ret
@@ -138,8 +248,8 @@
           ret.marginLeft = labelWidth
         }
         return ret
-      },
-      form() {
+      },*/
+      /*form() {
         let parent = this.$parent
         let parentName = parent.$options.componentName
         while (parentName !== 'ElForm') {
@@ -150,8 +260,8 @@
           parentName = parent.$options.componentName
         }
         return parent
-      },
-      fieldValue() {
+      },*/
+      /*fieldValue() {
         const model = this.form.model
         if (!model || !this.prop) {
           return
@@ -163,8 +273,8 @@
         }
 
         return getPropByPath(model, path, true).v
-      },
-      isRequired() {
+      },*/
+      /*isRequired() {
         let rules = this.getRules()
         let isRequired = false
 
@@ -178,18 +288,18 @@
           })
         }
         return isRequired
-      },
-      _formSize() {
+      },*/
+      /*_formSize() {
         return this.elForm.size
-      },
-      elFormItemSize() {
+      },*/
+      /*elFormItemSize() {
         return this.size || this._formSize
-      },
-      sizeClass() {
+      },*/
+      /*sizeClass() {
         return this.elFormItemSize || (this.$ELEMENT || {}).size
-      }
+      }*/
     },
-    data() {
+    /*data() {
       return {
         validateState: '',
         validateMessage: '',
@@ -198,7 +308,7 @@
         isNested: false,
         computedLabelWidth: ''
       }
-    },
+    },*/
     methods: {
       validate(trigger, callback = noop) {
         this.validateDisabled = false
@@ -263,7 +373,7 @@
 
         this.broadcast('ElTimeSelect', 'fieldReset', this.initialValue)
       },
-      getRules() {
+      /*getRules() {
         let formRules = this.form.rules
         const selfRules = this.rules
         const requiredRule = this.required !== undefined ? {required: !!this.required} : []
@@ -272,7 +382,7 @@
         formRules = formRules ? (prop.o[this.prop || ''] || prop.v) : []
 
         return [].concat(selfRules || formRules || []).concat(requiredRule)
-      },
+      },*/
       getFilteredRule(trigger) {
         const rules = this.getRules()
 

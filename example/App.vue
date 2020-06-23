@@ -5,7 +5,6 @@
   <button @click="pushTo('/link')">Link</button>
   <button @click="pushTo('/radio')">radio</button>
   <button @click="pushTo('/form')">form</button>
-  <h3 ref="root">123</h3>
   <router-view></router-view>
 </template>
 
@@ -20,14 +19,15 @@ export default {
     }
     const root = ref(null)
     onMounted(() => {
-      root.value
+      console.log(root.value)
     })
     return {
-      pushTo
+      pushTo,
+      root
     }
   },
   mounted () {
-    console.log(this.refs.root)
+
   }
 }
 </script>
