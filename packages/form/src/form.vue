@@ -7,7 +7,7 @@
   </form>
 </template>
 <script>
-  import {provide, inject, getCurrentInstance} from 'vue'
+  import {provide, inject,computed, getCurrentInstance, ref, reactive } from 'vue'
   import objectAssign from 'src/utils/merge'
 
   const ELFORMSYMBOL = Symbol('ElForm')
@@ -54,9 +54,45 @@
         default: false
       }
     },
-    setup(props,ctx) {
+    setup(props, ctx) {
+      // debugger
       const instance = getCurrentInstance()
-      provide(ELFORMSYMBOL, instance)
+      const fields = ref([])
+      const potentialLabelWidthArr = ref([])
+      // computed
+      const autoLabelWidth = computed(() => {
+        if (!potentialLabelWidthArr.length) return 0
+        const max = Math.max(...potentialLabelWidthArr)
+        return max ? `${max}px` : ''
+      })
+
+      //methods
+      const resetFields = () => {
+        if (!props.model) {
+          console.warn('[Element Warn][Form]model is required for resetFields to work.')
+          return
+        }
+        fields.forEach(field => {
+          field.resetField()
+        })
+      }
+
+      const addField = (field) => {
+        fields.value.push(field)
+      }
+      const removeField = (field) => {
+        fields.splice(fields.indexOf(field), 1)
+      }
+      provide(ELFORMSYMBOL, {
+        instance,
+        addField,
+        removeField
+      })
+
+      return {
+        autoLabelWidth,
+
+      }
     },
     watch: {
       rules() {
@@ -73,32 +109,32 @@
       }
     },
     computed: {
-      autoLabelWidth() {
+      /*autoLabelWidth() {
         if (!this.potentialLabelWidthArr.length) return 0
         const max = Math.max(...this.potentialLabelWidthArr)
         return max ? `${max}px` : ''
-      }
+      }*/
     },
-    data() {
+    /*data() {
       return {
         fields: [],
         potentialLabelWidthArr: [] // use this array to calculate auto width
       }
-    },
+    },*/
     created() {
-      this.$on('el.form.addField', (field) => {
+      /*this.$on('el.form.addField', (field) => {
         if (field) {
           this.fields.push(field)
         }
-      })
+      })*/
       /* istanbul ignore next */
-      this.$on('el.form.removeField', (field) => {
+      /*this.$on('el.form.removeField', (field) => {
         if (field.prop) {
           this.fields.splice(this.fields.indexOf(field), 1)
         }
-      })
+      })*/
     },
-    methods: {
+    /*methods: {
       resetFields() {
         if (!this.model) {
           console.warn('[Element Warn][Form]model is required for resetFields to work.')
@@ -189,6 +225,6 @@
         const index = this.getLabelWidthIndex(val)
         this.potentialLabelWidthArr.splice(index, 1)
       }
-    }
+    }*/
   }
 </script>
