@@ -1,11 +1,23 @@
 <template>
-  <button @click="pushTo('/')">button</button>
-  <button @click="pushTo('/layout')">layout</button>
-  <button @click="pushTo('/container')">container</button>
-  <button @click="pushTo('/link')">Link</button>
-  <button @click="pushTo('/radio')">radio</button>
-  <button @click="pushTo('/form')">form</button>
-  <router-view></router-view>
+  <button @click="pushTo('/')">
+    button
+  </button>
+  <button @click="pushTo('/layout')">
+    layout
+  </button>
+  <button @click="pushTo('/container')">
+    container
+  </button>
+  <button @click="pushTo('/link')">
+    Link
+  </button>
+  <button @click="pushTo('/radio')">
+    radio
+  </button>
+  <button @click="pushTo('/form')">
+    form
+  </button>
+  <router-view />
 </template>
 
 <script>
@@ -19,7 +31,7 @@ export default {
     }
     const root = ref(null)
     onMounted(() => {
-      console.log(root.value)
+      // console.log(root.value)
     })
     return {
       pushTo,

@@ -1,6 +1,6 @@
 <template>
   <main class="el-main">
-    <slot></slot>
+    <slot />
   </main>
 </template>
 

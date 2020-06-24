@@ -33,12 +33,12 @@ module.exports = merge(baseConf({ NODE_ENV: env }), {
   module: {
     rules: [
       // 开发环境进行eslint规则校验
-      /*{
+      {
         enforce: 'pre',
         test: /\.(vue|(j|t)sx?)$/,
         loader: 'eslint-loader',
         exclude: /node_modules/
-      }*/
+      }
     ]
   },
   plugins: [

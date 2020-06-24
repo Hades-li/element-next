@@ -3,7 +3,7 @@
     <h3>radio</h3>
     <div>
       <!--      <el-radio-group v-model="radio">-->
-      <el-radio ref="rd" v-model="radio" label="1" @changeValue="change">1号</el-radio>
+      <el-radio v-model="radio" label="1" @changeValue="change">1号</el-radio>
       <el-radio v-model="radio" label="2" @changeValue="change">2号</el-radio>
       <!--      </el-radio-group>-->
     </div>
@@ -80,10 +80,7 @@
     name: 'Radio',
     components: {ElButton, ElRadio},
     setup() {
-      const rd = ref()
       onMounted(() => {
-        debugger
-        console.log('rd:', rd.value)
       })
       const radio = ref('1')
       const radio2 = ref('1')

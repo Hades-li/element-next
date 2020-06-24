@@ -1,6 +1,9 @@
 <template>
-  <aside class="el-aside" :style="{ width }">
-    <slot></slot>
+  <aside
+    class="el-aside"
+    :style="{ width }"
+  >
+    <slot />
   </aside>
 </template>
 

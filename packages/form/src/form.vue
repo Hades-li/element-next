@@ -1,9 +1,12 @@
 <template>
-  <form class="el-form" :class="[
-    labelPosition ? 'el-form--label-' + labelPosition : '',
-    { 'el-form--inline': inline }
-  ]">
-    <slot></slot>
+  <form
+    class="el-form"
+    :class="[
+      labelPosition ? 'el-form--label-' + labelPosition : '',
+      { 'el-form--inline': inline }
+    ]"
+  >
+    <slot />
   </form>
 </template>
 <script>
@@ -167,7 +170,7 @@
           field.addValidateEvents()
         })
 
-        if (this.validateOnRuleChange) {
+        if (props.validateOnRuleChange) {
           validate(() => {
           })
         }
@@ -190,6 +193,9 @@
         autoLabelWidth: autoLabelWidth.value,
         addField,
         removeField,
+        validate,
+        registerLabelWidth,
+        deregisterLabelWidth
       })
 
       return {
@@ -199,6 +205,13 @@
         validate,
         validateField
       }
+    },
+    computed: {
+      /*autoLabelWidth() {
+        if (!this.potentialLabelWidthArr.length) return 0
+        const max = Math.max(...this.potentialLabelWidthArr)
+        return max ? `${max}px` : ''
+      }*/
     },
     watch: {
       /*rules() {
@@ -212,13 +225,6 @@
           this.validate(() => {
           })
         }
-      }*/
-    },
-    computed: {
-      /*autoLabelWidth() {
-        if (!this.potentialLabelWidthArr.length) return 0
-        const max = Math.max(...this.potentialLabelWidthArr)
-        return max ? `${max}px` : ''
       }*/
     },
     /*data() {

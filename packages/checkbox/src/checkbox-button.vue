@@ -1,44 +1,48 @@
 <template>
   <label
     class="el-checkbox-button"
-      :class="[
-        size ? 'el-checkbox-button--' + size : '',
-        { 'is-disabled': isDisabled },
-        { 'is-checked': isChecked },
-        { 'is-focus': focus },
-      ]"
+    :class="[
+      size ? 'el-checkbox-button--' + size : '',
+      { 'is-disabled': isDisabled },
+      { 'is-checked': isChecked },
+      { 'is-focus': focus },
+    ]"
     role="checkbox"
     :aria-checked="isChecked"
     :aria-disabled="isDisabled"
-    >
+  >
     <input
       v-if="trueLabel || falseLabel"
+      v-model="model"
       class="el-checkbox-button__original"
       type="checkbox"
       :name="name"
       :disabled="isDisabled"
       :true-value="trueLabel"
       :false-value="falseLabel"
-      v-model="model"
       @change="handleChange"
       @focus="focus = true"
-      @blur="focus = false">
+      @blur="focus = false"
+    >
     <input
       v-else
+      v-model="model"
       class="el-checkbox-button__original"
       type="checkbox"
       :name="name"
       :disabled="isDisabled"
       :value="label"
-      v-model="model"
       @change="handleChange"
       @focus="focus = true"
-      @blur="focus = false">
+      @blur="focus = false"
+    >
 
-    <span class="el-checkbox-button__inner"
+    <span
       v-if="$slots.default || label"
-      :style="isChecked ? activeStyle : null">
-      <slot>{{label}}</slot>
+      class="el-checkbox-button__inner"
+      :style="isChecked ? activeStyle : null"
+    >
+      <slot>{{ label }}</slot>
     </span>
 
   </label>
@@ -60,14 +64,6 @@
       }
     },
 
-    data() {
-      return {
-        selfModel: false,
-        focus: false,
-        isLimitExceeded: false
-      };
-    },
-
     props: {
       value: {},
       label: {},
@@ -76,6 +72,14 @@
       name: String,
       trueLabel: [String, Number],
       falseLabel: [String, Number]
+    },
+
+    data() {
+      return {
+        selfModel: false,
+        focus: false,
+        isLimitExceeded: false
+      };
     },
     computed: {
       model: {
@@ -164,6 +168,10 @@
           : this.disabled || (this.elForm || {}).disabled;
       }
     },
+
+    created() {
+      this.checked && this.addToStore();
+    },
     methods: {
       addToStore() {
         if (
@@ -190,10 +198,6 @@
           }
         });
       }
-    },
-
-    created() {
-      this.checked && this.addToStore();
     }
   };
 </script>

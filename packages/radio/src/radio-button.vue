@@ -14,23 +14,24 @@
     @keydown.space.stop.prevent="value = isDisabled ? value : label"
   >
     <input
+      v-model="value"
       class="el-radio-button__orig-radio"
       :value="label"
       type="radio"
-      v-model="value"
       :name="name"
-      @change="handleChange"
       :disabled="isDisabled"
       tabindex="-1"
+      @change="handleChange"
       @focus="focus = true"
       @blur="focus = false"
     >
     <span
       class="el-radio-button__inner"
       :style="value === label ? activeStyle : null"
-      @keydown.stop>
-      <slot></slot>
-      <template v-if="!$slots.default">{{label}}</template>
+      @keydown.stop
+    >
+      <slot />
+      <template v-if="!$slots.default">{{ label }}</template>
     </span>
   </label>
 </template>

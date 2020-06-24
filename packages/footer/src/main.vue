@@ -1,6 +1,9 @@
 <template>
-  <footer class="el-footer" :style="{ height }">
-    <slot></slot>
+  <footer
+    class="el-footer"
+    :style="{ height }"
+  >
+    <slot />
   </footer>
 </template>
 
