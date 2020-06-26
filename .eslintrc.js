@@ -6,11 +6,12 @@ module.exports = {
     es6: true
   },
   parserOptions: {
+    parser: "babel-eslint",
     sourceType: 'module'
   },
   extends: [
     // add more generic rulesets here, such as:
-    'eslint:recommended',
+    // 'eslint:recommended',
     'plugin:vue/vue3-recommended'
   ],
   rules: {

@@ -86,7 +86,7 @@
         return props.disabled || _radioGroup.disabled || (elForm || {}).disabled;
       })
       const tabIndex = computed(() => {
-        return (isDisabled || (_radioGroup && value.value !== props.label)) ? -1 : 0;
+        return (isDisabled.value || (_radioGroup && value.value !== props.label)) ? -1 : 0;
       })
       const value = computed({
         get() {

@@ -3,12 +3,12 @@
     <h3>radio</h3>
     <div>
       <!--      <el-radio-group v-model="radio">-->
-      <el-radio v-model="radio" label="1" @changeValue="change">1号</el-radio>
-      <el-radio v-model="radio" label="2" @changeValue="change">2号</el-radio>
+      <el-radio v-model="radio" label="1" @change-value="change">1号</el-radio>
+      <el-radio v-model="radio" label="2" @change-value="change">2号</el-radio>
       <!--      </el-radio-group>-->
     </div>
     <div>
-      <el-radio-group @changeValue="change_2" v-model="radio2">
+      <el-radio-group @change-value="change_2" v-model="radio2">
         <el-radio label="1">1号</el-radio>
         <el-radio label="2">2号</el-radio>
       </el-radio-group>
@@ -16,7 +16,7 @@
     <el-button @click="btnChange">点击切换</el-button>
 
     <div style="margin-top: 20px">
-      <el-radio-group v-model="local" @changeValue="change_local">
+      <el-radio-group v-model="local" @change-value="change_local">
         <el-radio-button label="上海"></el-radio-button>
         <el-radio-button label="北京"></el-radio-button>
         <el-radio-button label="广州"></el-radio-button>

@@ -18,11 +18,6 @@
         type: String,
         default: '60px'
       }
-    },
-    setup(props) {
-      return {
-        height: props.height
-      }
     }
   };
 </script>

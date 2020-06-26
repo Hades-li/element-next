@@ -16,7 +16,7 @@
   const ELFORMSYMBOL = Symbol('ElForm')
 
   export function useElForm() {
-    return inject(ELFORMSYMBOL)
+    return inject(ELFORMSYMBOL, undefined)
   }
 
   export default {
@@ -63,8 +63,8 @@
       const potentialLabelWidthArr = ref([])
       // computed
       const autoLabelWidth = computed(() => {
-        if (!potentialLabelWidthArr.length) return 0
-        const max = Math.max(...potentialLabelWidthArr)
+        if (!potentialLabelWidthArr.value.length) return 0
+        const max = Math.max(...potentialLabelWidthArr.value)
         return max ? `${max}px` : ''
       })
 
@@ -88,17 +88,17 @@
         let valid = true
         let count = 0
         // 如果需要验证的fields为空，调用验证时立刻返回callback
-        if (fields.length === 0 && callback) {
+        if (fields.value.length === 0 && callback) {
           callback(true)
         }
         let invalidFields = {}
-        fields.forEach(field => {
+        fields.value.forEach(field => {
           field.validate('', (message, field) => {
             if (message) {
               valid = false
             }
             invalidFields = objectAssign({}, invalidFields, field)
-            if (typeof callback === 'function' && ++count === fields.length) {
+            if (typeof callback === 'function' && ++count === fields.value.length) {
               callback(valid, invalidFields)
             }
           })
@@ -113,23 +113,23 @@
           console.warn('[Element Warn][Form]model is required for resetFields to work.')
           return
         }
-        fields.forEach(field => {
+        fields.value.forEach(field => {
           field.resetField()
         })
       }
       const clearValidate = (props = []) => {
-        const fields = props.length
+        const _fields = props.length
           ? (typeof props === 'string'
-              ? fields.filter(field => props === field.prop)
-              : fields.filter(field => props.indexOf(field.prop) > -1)
-          ) : fields
-        fields.forEach(field => {
+              ? fields.value.filter(field => props === field.prop)
+              : fields.value.filter(field => props.indexOf(field.prop) > -1)
+          ) : fields.value
+        _fields.forEach(field => {
           field.clearValidate()
         })
       }
       const validateField = (props, cb) => {
         props = [].concat(props)
-        const _fields = fields.filter(field => props.indexOf(field.prop) !== -1)
+        const _fields = fields.value.filter(field => props.indexOf(field.prop) !== -1)
         if (!_fields.length) {
           console.warn('[Element Warn]please pass correct props!')
           return
@@ -141,7 +141,7 @@
       }
 
       const getLabelWidthIndex = (width) => {
-        const index = potentialLabelWidthArr.indexOf(width)
+        const index = potentialLabelWidthArr.value.indexOf(width)
         // it's impossible
         if (index === -1) {
           throw new Error('[ElementForm]unpected width ', width)
@@ -152,20 +152,20 @@
       const registerLabelWidth = (val, oldVal) => {
         if (val && oldVal) {
           const index = getLabelWidthIndex(oldVal)
-          potentialLabelWidthArr.splice(index, 1, val)
+          potentialLabelWidthArr.value.splice(index, 1, val)
         } else if (val) {
-          potentialLabelWidthArr.push(val)
+          potentialLabelWidthArr.value.push(val)
         }
       }
       const deregisterLabelWidth = (val) => {
         const index = getLabelWidthIndex(val)
-        potentialLabelWidthArr.splice(index, 1)
+        potentialLabelWidthArr.value.splice(index, 1)
       }
 
       // watch
       watch(props.rules, () => {
         // remove then add event listeners on form-item after form rules change
-        fields.forEach(field => {
+        fields.value.forEach(field => {
           field.removeValidateEvents()
           field.addValidateEvents()
         })
@@ -181,7 +181,7 @@
         fields.value.push(field)
       }
       const removeField = (field) => {
-        fields.splice(fields.indexOf(field), 1)
+        fields.value.splice(fields.value.indexOf(field), 1)
       }
       // debugger
 

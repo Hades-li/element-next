@@ -64,7 +64,7 @@
   const ELFORMITEMSYMBOL = Symbol('elFormItem')
 
   export function useElFormItem() {
-    return inject(ELFORMITEMSYMBOL)
+    return inject(ELFORMITEMSYMBOL, undefined)
   }
 
   export default {
@@ -151,7 +151,6 @@
         }
         return ret
       })
-      console.log('labelStyle:', labelStyle.value)
 
       const contentStyle = computed(() => {
         const ret = {}
@@ -234,7 +233,7 @@
         }).map(rule => objectAssign({}, rule))
       }
       function validate (trigger, callback = noop) {
-        this.validateDisabled = false
+        data.validateDisabled = false
         const rules = getFilteredRule(trigger)
         if ((!rules || rules.length === 0) && props.required === undefined) {
           callback()
@@ -318,6 +317,10 @@
         validate('change')
       }
 
+      function updateComputedLabelWidth(width) {
+        data.computedLabelWidth = width ? `${width}px` : ''
+      }
+
       // mounted
       onMounted(() => {
         if (props.prop) {
@@ -341,8 +344,9 @@
         instance,
         name: instance.type.name,
         elFormItemSize: elFormItemSize.value,
+        validateState: data.validateState,
         onFieldBlur,
-        onFieldChange
+        onFieldChange,
       })
 
       return {
@@ -575,9 +579,9 @@
 
         this.validate('change')
       },*/
-      updateComputedLabelWidth(width) {
+      /*updateComputedLabelWidth(width) {
         this.computedLabelWidth = width ? `${width}px` : ''
-      },
+      },*/
       /*addValidateEvents() {
         const rules = this.getRules()
 
@@ -586,9 +590,9 @@
           this.$on('el.form.change', this.onFieldChange)
         }
       },*/
-      removeValidateEvents() {
+      /*removeValidateEvents() {
         this.$off()
-      }
+      }*/
     }
   }
 </script>

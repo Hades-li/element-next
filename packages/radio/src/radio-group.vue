@@ -80,7 +80,7 @@
       const changeEvent = value => {
         ctx.emit('update:modelValue', value)
         nextTick(() => {
-          ctx.emit('changeValue', value)
+          ctx.emit('change-value', value)
         })
       }
 

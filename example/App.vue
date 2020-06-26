@@ -17,6 +17,9 @@
   <button @click="pushTo('/form')">
     form
   </button>
+  <button @click="pushTo('/input')">
+    input
+  </button>
   <router-view />
 </template>
 

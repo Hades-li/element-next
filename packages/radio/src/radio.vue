@@ -115,7 +115,7 @@
           : props.disabled || (elForm || {}).disabled
       })
       const tabIndex = computed(() => {
-        return (isDisabled || (isGroup.value && model.value !== props.label)) ? -1 : 0
+        return (isDisabled.value || (isGroup.value && model.value !== props.label)) ? -1 : 0
       })
 
       const model = computed({
@@ -136,7 +136,7 @@
       // methods
       function handleChange() {
         nextTick(() => {
-          ctx.emit('changeValue', model.value)
+          ctx.emit('change-value', model.value)
           // isGroup.value && this.dispatch('ElRadioGroup', 'handleChange', model.value)
         })
       }

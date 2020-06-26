@@ -80,7 +80,7 @@ export default {
       const autoLabelWidth = elForm.autoLabelWidth
       const style = {}
       if (autoLabelWidth && autoLabelWidth !== 'auto') {
-        const marginLeft = parseInt(autoLabelWidth, 10) - computedWidth
+        const marginLeft = parseInt(autoLabelWidth, 10) - computedWidth.value
         if (marginLeft) {
           style.marginLeft = marginLeft + 'px'
         }
