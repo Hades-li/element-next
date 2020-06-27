@@ -35,7 +35,7 @@
     },
     id: String
   })
-  console.log(props)
+  // console.log(props)
   export default {
     components: { ElScrollbar },
     mixins: [Popper, Emitter],
