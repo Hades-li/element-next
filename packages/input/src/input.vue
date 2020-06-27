@@ -105,10 +105,11 @@
     >
     </textarea>
     <span v-if="isWordLimitVisible && type === 'textarea'" class="el-input__count">{{ textLength }}/{{ upperLimit }}</span>
+    <el-autocomplete-suggestions></el-autocomplete-suggestions>
   </div>
 </template>
 <script>
-  import { ref,toRef, reactive, computed, watch, watchEffect, nextTick, getCurrentInstance, onMounted, onUpdated, readonly } from 'vue'
+  import { ref,toRef, reactive, computed, watch, watchEffect, nextTick, getCurrentInstance, onMounted, onUpdated, inject,provide } from 'vue'
   import {useElForm} from "packages/form/src/form";
   import {useElFormItem} from "packages/form/src/form-item";
   import {useELEMENT} from "src/index";
@@ -117,6 +118,13 @@
   import calcTextareaHeight from './calcTextareaHeight';
   import merge from 'src/utils/merge';
   import {isKorean} from 'src/utils/shared';
+  import ElAutocompleteSuggestions from './autocomplete-suggestions'
+
+  const INPUTSYMBOL = Symbol('Input')
+
+  export function useInput() {
+    return inject(INPUTSYMBOL)
+  }
 
   export default {
     name: 'ElInput',
@@ -126,6 +134,10 @@
     mixins: [emitter, Migrating],
 
     inheritAttrs: false,
+
+    components: {
+      ElAutocompleteSuggestions
+    },
 
     /*inject: {
       elForm: {
@@ -415,6 +427,9 @@
           isWordLimitVisible.value ||
           (validateState.value && needStatusIcon.value);
       }
+      function itemClick(item) {
+
+      }
 
       // watch
       watch(toRef(props, 'modelValue'), (val) => {
@@ -438,6 +453,11 @@
       })
       onUpdated(() => {
         nextTick(updateIconOffset);
+      })
+
+      provide(INPUTSYMBOL, {
+        instance,
+        itemClick
       })
       return {
         slots: ctx.slots,

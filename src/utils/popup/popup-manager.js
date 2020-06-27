@@ -1,12 +1,15 @@
-import Vue from 'vue';
-import { addClass, removeClass } from 'element-ui/src/utils/dom';
+// import Vue from 'vue';
+import {useELEMENT} from "src/index";
+import { addClass, removeClass } from 'src/utils/dom';
+const isServer = false
+const ELEMENT = useELEMENT()
 
 let hasModal = false;
 let hasInitZIndex = false;
 let zIndex;
 
 const getModal = function() {
-  if (Vue.prototype.$isServer) return;
+  if (isServer) return;
   let modalDom = PopupManager.modalDom;
   if (modalDom) {
     hasModal = true;
@@ -67,7 +70,7 @@ const PopupManager = {
   },
 
   openModal: function(id, zIndex, dom, modalClass, modalFade) {
-    if (Vue.prototype.$isServer) return;
+    if (isServer) return;
     if (!id || zIndex === undefined) return;
     this.modalFade = modalFade;
 
@@ -155,7 +158,7 @@ Object.defineProperty(PopupManager, 'zIndex', {
   configurable: true,
   get() {
     if (!hasInitZIndex) {
-      zIndex = zIndex || (Vue.prototype.$ELEMENT || {}).zIndex || 2000;
+      zIndex = zIndex || (ELEMENT || {}).zIndex || 2000;
       hasInitZIndex = true;
     }
     return zIndex;
@@ -166,7 +169,7 @@ Object.defineProperty(PopupManager, 'zIndex', {
 });
 
 const getTopPopup = function() {
-  if (Vue.prototype.$isServer) return;
+  if (isServer) return;
   if (PopupManager.modalStack.length > 0) {
     const topPopup = PopupManager.modalStack[PopupManager.modalStack.length - 1];
     if (!topPopup) return;
@@ -176,7 +179,7 @@ const getTopPopup = function() {
   }
 };
 
-if (!Vue.prototype.$isServer) {
+if (!isServer) {
   // handle `esc` key when the popup is shown
   window.addEventListener('keydown', function(event) {
     if (event.keyCode === 27) {

@@ -1,8 +1,9 @@
-import Vue from 'vue';
-import merge from 'element-ui/src/utils/merge';
-import PopupManager from 'element-ui/src/utils/popup/popup-manager';
+import {nextTick} from 'vue';
+import merge from 'src/utils/merge';
+import PopupManager from 'src/utils/popup/popup-manager';
 import getScrollBarWidth from '../scrollbar-width';
 import { getStyle, addClass, removeClass, hasClass } from '../dom';
+const isServer = false
 
 let idSeed = 1;
 
@@ -72,7 +73,7 @@ export default {
         if (this._opening) return;
         if (!this.rendered) {
           this.rendered = true;
-          Vue.nextTick(() => {
+          nextTick(() => {
             this.open();
           });
         } else {

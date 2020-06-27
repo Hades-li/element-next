@@ -1,19 +1,115 @@
-import Vue from 'vue';
+import {mergeProps, ref, watch,watchEffect,computed, onBeforeUnmount} from 'vue';
+const isServer = false
+
 import {
   PopupManager
 } from 'src/utils/popup';
 
-const PopperJS = Vue.prototype.$isServer ? function() {} : require('./popper');
+const PopperJS = isServer ? function() {} : require('./popper');
 const stop = e => e.stopPropagation();
 
 /**
- * @param {HTMLElement} [reference=$refs.reference] - The reference element used to position the popper.
- * @param {HTMLElement} [popper=$refs.popper] - The HTML element used as popper, or a configuration used to generate the popper.
- * @param {String} [placement=button] - Placement of the popper accepted values: top(-start, -end), right(-start, -end), bottom(-start, -end), left(-start, -end)
- * @param {Number} [offset=0] - Amount of pixels the popper will be shifted (can be negative).
- * @param {Boolean} [visible=false] Visibility of the popup element.
- * @param {Boolean} [visible-arrow=false] Visibility of the arrow, no style.
+ * @param props 原始的props
  */
+
+export function mixinProps (props) {
+   return mergeProps(
+     {
+     transformOrigin: {
+       type: [Boolean, String],
+       default: true
+     },
+     placement: {
+       type: String,
+       default: 'bottom'
+     },
+     boundariesPadding: {
+       type: Number,
+       default: 5
+     },
+     reference: {},
+     popper: {},
+     offset: {
+       default: 0
+     },
+     modelValue: Boolean,
+     visibleArrow: Boolean,
+     arrowOffset: {
+       type: Number,
+       default: 35
+     },
+     appendToBody: {
+       type: Boolean,
+       default: true
+     },
+     popperOptions: {
+       type: Object,
+       default() {
+         return {
+           gpuAcceleration: false
+         };
+       }
+     }
+   }, props)
+}
+
+export function usePopper(props, ctx) {
+  const showPopper = ref(false)
+  const currentPlacement = ref('')
+  let popperJS = undefined
+  // watch
+  watchEffect(() => {
+    showPopper.value = props.modelValue
+    if (props.disabled) return;
+    showPopper.value ? updatePopper() : destroyPopper();
+    ctx.emit('input', showPopper.value);
+  })
+
+  function updatePopper() {
+    // const popperJS = this.popperJS;
+    if (popperJS) {
+      popperJS.update();
+      if (popperJS._popper) {
+        popperJS._popper.style.zIndex = PopupManager.nextZIndex();
+      }
+    } else {
+      this.createPopper();
+    }
+  }
+  function destroyPopper() {
+    if (popperJS) {
+      resetTransformOrigin();
+    }
+  }
+  function resetTransformOrigin() {
+    if (!props.transformOrigin) return;
+    let placementMap = {
+      top: 'bottom',
+      bottom: 'top',
+      left: 'right',
+      right: 'left'
+    }
+    function doDestroy(forceDestroy = false) {
+      /* istanbul ignore if */
+      if (!popperJS || (showPopper.value && !forceDestroy)) return;
+      popperJS.destroy();
+      popperJS = null;
+    }
+    onBeforeUnmount(() => {
+      doDestroy(true);
+      if (this.popperElm && this.popperElm.parentNode === document.body) {
+        this.popperElm.removeEventListener('click', stop);
+        document.body.removeChild(this.popperElm);
+      }
+    })
+    let placement = popperJS._popper.getAttribute('x-placement').split('-')[0];
+    let origin = placementMap[placement];
+    popperJS._popper.style.transformOrigin = typeof props.transformOrigin === 'string'
+      ? props.transformOrigin
+      : ['top', 'bottom'].indexOf(placement) > -1 ? `center ${ origin }` : `${ origin } center`;
+  }
+
+}
 export default {
   props: {
     transformOrigin: {
@@ -53,14 +149,14 @@ export default {
     }
   },
 
-  data() {
+  /*data() {
     return {
       showPopper: false,
       currentPlacement: ''
     };
-  },
+  },*/
 
-  watch: {
+  /*watch: {
     value: {
       immediate: true,
       handler(val) {
@@ -74,7 +170,7 @@ export default {
       val ? this.updatePopper() : this.destroyPopper();
       this.$emit('input', val);
     }
-  },
+  },*/
 
   methods: {
     createPopper() {
@@ -117,7 +213,7 @@ export default {
       this.popperElm.addEventListener('click', stop);
     },
 
-    updatePopper() {
+    /*updatePopper() {
       const popperJS = this.popperJS;
       if (popperJS) {
         popperJS.update();
@@ -127,7 +223,7 @@ export default {
       } else {
         this.createPopper();
       }
-    },
+    },*/
 
     doDestroy(forceDestroy) {
       /* istanbul ignore if */
@@ -136,13 +232,13 @@ export default {
       this.popperJS = null;
     },
 
-    destroyPopper() {
+    /*destroyPopper() {
       if (this.popperJS) {
         this.resetTransformOrigin();
       }
-    },
+    },*/
 
-    resetTransformOrigin() {
+    /*resetTransformOrigin() {
       if (!this.transformOrigin) return;
       let placementMap = {
         top: 'bottom',
@@ -155,7 +251,7 @@ export default {
       this.popperJS._popper.style.transformOrigin = typeof this.transformOrigin === 'string'
         ? this.transformOrigin
         : ['top', 'bottom'].indexOf(placement) > -1 ? `center ${ origin }` : `${ origin } center`;
-    },
+    },*/
 
     appendArrow(element) {
       let hash;
@@ -183,13 +279,13 @@ export default {
     }
   },
 
-  beforeDestroy() {
+  /*beforeDestroy() {
     this.doDestroy(true);
     if (this.popperElm && this.popperElm.parentNode === document.body) {
       this.popperElm.removeEventListener('click', stop);
       document.body.removeChild(this.popperElm);
     }
-  },
+  },*/
 
   // call destroy in keep-alive mode
   deactivated() {
