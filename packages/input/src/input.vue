@@ -113,9 +113,7 @@
       ref="suggestions"
       :placement="placement"
       :id="id"
-    >
-
-    </el-autocomplete-suggestions>
+    ></el-autocomplete-suggestions>
   </div>
 </template>
 <script>
@@ -129,6 +127,7 @@
   import merge from 'src/utils/merge';
   import {isKorean} from 'src/utils/shared';
   import ElAutocompleteSuggestions from './autocomplete-suggestions'
+  import debounce from 'lodash/debounce'
 
   const INPUTSYMBOL = Symbol('Input')
 
@@ -225,7 +224,12 @@
       highlightFirstItem: {
         type: Boolean,
         default: false
-      }
+      },
+      hideLoading: {
+        type: Boolean,
+        default: false
+      },
+      fetchSuggestions: Function, // 用于建议的函数
     },
 
     setup(props, ctx) {
@@ -242,7 +246,8 @@
       const textarea = ref(null)
       const isServer = ref(false)
       const model = ref(props.modelValue)
-      console.log(props.modelValue)
+      const suggestions = ref(null)
+      // console.log(props.modelValue)
 
       // computed
       const _elFormItemSize = computed(() => {
@@ -478,6 +483,7 @@
       provide(INPUTSYMBOL, {
         instance,
         inputElm: input,
+        hideLoading: props.hideLoading,
         itemClick
       })
       return {
@@ -496,6 +502,7 @@
         upperLimit,
         validateIcon,
         textareaStyle,
+        suggestions, // 下拉建议列表
         handleInput,
         handleCompositionStart,
         handleCompositionUpdate,

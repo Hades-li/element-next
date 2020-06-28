@@ -1,5 +1,6 @@
 // reference https://github.com/noeldelgado/gemini-scrollbar/blob/master/index.js
 
+import {h} from 'vue'
 import { addResizeListener, removeResizeListener } from 'src/utils/resize-event';
 import scrollbarWidth from 'src/utils/scrollbar-width';
 import { toObject } from 'src/utils/util';
@@ -39,7 +40,7 @@ export default {
     }
   },
 
-  render(h) {
+  render() {
     let gutter = scrollbarWidth();
     let style = this.wrapStyle;
 
