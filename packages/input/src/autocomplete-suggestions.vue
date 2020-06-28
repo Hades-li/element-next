@@ -18,7 +18,7 @@
   </transition>
 </template>
 <script>
-  import { ref, nextTick, onMounted, onUpdated, mergeProps } from 'vue'
+  import { ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance } from 'vue'
   import Popper from 'src/utils/vue-popper';
   import Emitter from 'src/mixins/emitter';
   import ElScrollbar from 'packages/scrollbar';
@@ -62,18 +62,22 @@
     props,
     setup(props, ctx) {
       const input = useInput()
+      const instance = getCurrentInstance()
       const dropdownWidth = ref('')
+      let referenceList = undefined
       // methods
       function select(item) {
         // this.dispatch('ElAutocomplete', 'item-click', item);
         input.itemClick(item)
       }
-      function visiable(val, inputWidth) {
+      function visible(val, inputWidth) {
         dropdownWidth.value = inputWidth + 'px'
       }
 
       onMounted(() => {
-
+        referenceList = instance.vnode.el.querySelector('.el-autocomplete-suggestion__list');
+        referenceList.setAttribute('role', 'listbox');
+        referenceList.setAttribute('id', props.id);
       })
 
       onUpdated(() => {
@@ -83,7 +87,8 @@
       })
 
       return {
-        visiable
+        visible,
+        el: instance.vnode.el
       }
     },
     /*methods: {
@@ -98,13 +103,13 @@
       });
     },*/
 
-    mounted() {
+    /*mounted() {
       this.$parent.popperElm = this.popperElm = this.$el;
       this.referenceElm = this.$parent.$refs.input.$refs.input || this.$parent.$refs.input.$refs.textarea;
       this.referenceList = this.$el.querySelector('.el-autocomplete-suggestion__list');
       this.referenceList.setAttribute('role', 'listbox');
       this.referenceList.setAttribute('id', this.id);
-    },
+    },*/
 
     /*created() {
       this.$on('visible', (val, inputWidth) => {
@@ -112,5 +117,5 @@
         this.showPopper = val;
       });
     }*/
-  };
+  }
 </script>

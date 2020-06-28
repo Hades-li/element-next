@@ -105,7 +105,17 @@
     >
     </textarea>
     <span v-if="isWordLimitVisible && type === 'textarea'" class="el-input__count">{{ textLength }}/{{ upperLimit }}</span>
-    <el-autocomplete-suggestions></el-autocomplete-suggestions>
+    <el-autocomplete-suggestions
+      visible-arrow
+      :class="[popperClass ? popperClass : '']"
+      :popper-options="popperOptions"
+      :append-to-body="popperAppendToBody"
+      ref="suggestions"
+      :placement="placement"
+      :id="id"
+    >
+
+    </el-autocomplete-suggestions>
   </div>
 </template>
 <script>
@@ -131,7 +141,7 @@
 
     componentName: 'ElInput',
 
-    mixins: [emitter, Migrating],
+    // mixins: [emitter, Migrating],
 
     inheritAttrs: false,
 
@@ -205,7 +215,17 @@
         type: Boolean,
         default: false
       },
-      tabindex: String
+      popperClass: String,
+      popperOptions: Object,
+      tabindex: String,
+      popperAppendToBody: {
+        type: Boolean,
+        default: true
+      },
+      highlightFirstItem: {
+        type: Boolean,
+        default: false
+      }
     },
 
     setup(props, ctx) {
@@ -457,6 +477,7 @@
 
       provide(INPUTSYMBOL, {
         instance,
+        inputElm: input,
         itemClick
       })
       return {
