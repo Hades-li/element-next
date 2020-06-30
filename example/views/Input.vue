@@ -100,14 +100,19 @@
         @select="handleSelect"
       ></el-input>
     </div>
+    <el-scrollbar>
+      <div>滚动</div>
+    </el-scrollbar>
   </div>
 </template>
 
 <script>
   import {ref, watch} from 'vue'
+  import ElScrollbar from "packages/scrollbar/src/main";
 
   export default {
     name: "Input",
+    components: {ElScrollbar},
     setup() {
       const input = ref('')
       const textarea = ref('123')

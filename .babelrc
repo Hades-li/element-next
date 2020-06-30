@@ -1,3 +1,14 @@
 {
-  "presets": ["@vue/babel-preset-app","@babel/preset-react"]
+  "presets": [
+    "@vue/babel-preset-app"
+  ],
+  "plugins": [
+    [
+      "@ant-design-vue/babel-plugin-jsx",
+      {
+        "transformOn": true,
+        "compatibleProps": true
+      }
+    ]
+  ]
 }
