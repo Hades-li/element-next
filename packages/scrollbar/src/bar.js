@@ -1,5 +1,6 @@
 import { on, off } from 'src/utils/dom';
 import { renderThumbStyle, BAR_MAP } from './util';
+import { h, computed, ref, getCurrentInstance } from 'vue';
 
 /* istanbul ignore next */
 export default {
@@ -20,11 +21,88 @@ export default {
       return this.$parent.wrap;
     }
   },
+  setup(props, ctx) {
+    const instance = getCurrentInstance()
+    // refs
+    const thumb = ref(null)
 
-  render(h) {
-    const { size, move, bar } = this;
+    // computed
+    const bar = computed(() => {
+      return BAR_MAP[props.vertical ? 'vertical' : 'horizontal'];
+    })
+    const wrap = computed(() => {
+      return instance.parent.wrap
+    })
+    const axis = ref({})
+    const cursorDown = ref(null)
 
-    return (
+    // methods
+    function clickThumbHandler(e) {
+      // prevent click event of right button
+      if (e.ctrlKey || e.button === 2) {
+        return;
+      }
+      // debugger
+      startDrag(e);
+      axis.value[bar.value.axis] = (e.currentTarget[bar.value.offset] - (e[bar.value.client] - e.currentTarget.getBoundingClientRect()[bar.value.direction]));
+    }
+    function clickTrackHandler(e) {
+      const offset = Math.abs(e.target.getBoundingClientRect()[bar.value.direction] - e[bar.value.client]);
+      const thumbHalf = (thumb[bar.value.offset] / 2);
+      const thumbPositionPercentage = ((offset - thumbHalf) * 100 / instance.vnode.el[bar.value.offset]);
+
+      wrap[bar.value.scroll] = (thumbPositionPercentage * wrap[bar.value.scrollSize] / 100);
+    }
+    function startDrag(e) {
+      e.stopImmediatePropagation();
+      cursorDown.value = true;
+
+      on(document, 'mousemove', mouseMoveDocumentHandler);
+      on(document, 'mouseup', mouseUpDocumentHandler);
+      document.onselectstart = () => false;
+    }
+
+    function mouseMoveDocumentHandler(e) {
+      if (cursorDown.value === false) return;
+      const prevPage = axis.value[bar.value.axis];
+
+      if (!prevPage) return;
+
+      const offset = ((instance.vnode.el.getBoundingClientRect()[bar.value.direction] - e[bar.value.client]) * -1);
+      const thumbClickPosition = (thumb[bar.value.offset] - prevPage);
+      const thumbPositionPercentage = ((offset - thumbClickPosition) * 100 / instance.vnode.el[bar.value.offset]);
+
+      wrap[bar.value.scroll] = (thumbPositionPercentage * wrap[bar.value.scrollSize] / 100);
+    }
+
+    function mouseUpDocumentHandler(e) {
+      cursorDown.value = false;
+      axis.value[bar.value.axis] = 0;
+      off(document, 'mousemove', mouseMoveDocumentHandler);
+      document.onselectstart = null;
+    }
+
+    return () => h('div', {
+      class: ['el-scrollbar__bar', 'is-' + bar.value.key],
+      onMousedown: clickTrackHandler
+    },
+    h('div', {
+      ref: thumb,
+      class: 'el-scrollbar__thumb',
+      onMousedown: clickThumbHandler,
+      style: renderThumbStyle({
+        size: props.size,
+        move: props.move,
+        bar: bar.value
+      })
+    })
+    )
+  },
+
+  /* render() {
+    const { size, move, bar } = this.$props;
+
+    return
       <div
         class={ ['el-scrollbar__bar', 'is-' + bar.key] }
         onMousedown={ this.clickTrackHandler } >
@@ -35,11 +113,11 @@ export default {
           style={ renderThumbStyle({ size, move, bar }) }>
         </div>
       </div>
-    );
-  },
 
-  methods: {
-    clickThumbHandler(e) {
+  }, */
+
+  /* methods: {
+     clickThumbHandler(e) {
       // prevent click event of right button
       if (e.ctrlKey || e.button === 2) {
         return;
@@ -84,7 +162,7 @@ export default {
       off(document, 'mousemove', this.mouseMoveDocumentHandler);
       document.onselectstart = null;
     }
-  },
+  }, */
 
   destroyed() {
     off(document, 'mouseup', this.mouseUpDocumentHandler);

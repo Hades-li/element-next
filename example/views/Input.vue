@@ -100,8 +100,23 @@
         @select="handleSelect"
       ></el-input>
     </div>
-    <el-scrollbar>
-      <div>滚动</div>
+    <el-scrollbar style="height: 100px">
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
+      <div>第一行</div>
     </el-scrollbar>
   </div>
 </template>
