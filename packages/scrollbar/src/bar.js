@@ -1,6 +1,7 @@
 import { on, off } from 'src/utils/dom';
 import { renderThumbStyle, BAR_MAP } from './util';
-import { h, computed, ref, getCurrentInstance } from 'vue';
+import { h, computed, ref, getCurrentInstance, onUnmounted } from 'vue';
+import { useWrap } from './main';
 
 /* istanbul ignore next */
 export default {
@@ -12,7 +13,7 @@ export default {
     move: Number
   },
 
-  computed: {
+  /*computed: {
     bar() {
       return BAR_MAP[this.vertical ? 'vertical' : 'horizontal'];
     },
@@ -20,19 +21,18 @@ export default {
     wrap() {
       return this.$parent.wrap;
     }
-  },
+  },*/
   setup(props, ctx) {
     const instance = getCurrentInstance()
     // refs
     const thumb = ref(null)
 
+    const  wrap = useWrap()
     // computed
     const bar = computed(() => {
       return BAR_MAP[props.vertical ? 'vertical' : 'horizontal'];
     })
-    const wrap = computed(() => {
-      return instance.parent.wrap
-    })
+
     const axis = ref({})
     const cursorDown = ref(null)
 
@@ -48,15 +48,14 @@ export default {
     }
     function clickTrackHandler(e) {
       const offset = Math.abs(e.target.getBoundingClientRect()[bar.value.direction] - e[bar.value.client]);
-      const thumbHalf = (thumb[bar.value.offset] / 2);
+      const thumbHalf = (thumb.value[bar.value.offset] / 2);
       const thumbPositionPercentage = ((offset - thumbHalf) * 100 / instance.vnode.el[bar.value.offset]);
 
-      wrap[bar.value.scroll] = (thumbPositionPercentage * wrap[bar.value.scrollSize] / 100);
+      wrap.value[bar.value.scroll] = (thumbPositionPercentage * wrap.value[bar.value.scrollSize] / 100);
     }
     function startDrag(e) {
       e.stopImmediatePropagation();
       cursorDown.value = true;
-
       on(document, 'mousemove', mouseMoveDocumentHandler);
       on(document, 'mouseup', mouseUpDocumentHandler);
       document.onselectstart = () => false;
@@ -69,10 +68,12 @@ export default {
       if (!prevPage) return;
 
       const offset = ((instance.vnode.el.getBoundingClientRect()[bar.value.direction] - e[bar.value.client]) * -1);
-      const thumbClickPosition = (thumb[bar.value.offset] - prevPage);
+      const thumbClickPosition = (thumb.value[bar.value.offset] - prevPage);
       const thumbPositionPercentage = ((offset - thumbClickPosition) * 100 / instance.vnode.el[bar.value.offset]);
+      // debugger
 
-      wrap[bar.value.scroll] = (thumbPositionPercentage * wrap[bar.value.scrollSize] / 100);
+      wrap.value[bar.value.scroll] = (thumbPositionPercentage * wrap.value[bar.value.scrollSize] / 100);
+
     }
 
     function mouseUpDocumentHandler(e) {
@@ -81,6 +82,10 @@ export default {
       off(document, 'mousemove', mouseMoveDocumentHandler);
       document.onselectstart = null;
     }
+
+    onUnmounted(() => {
+      off(document, 'mouseup', mouseUpDocumentHandler);
+    })
 
     return () => h('div', {
       class: ['el-scrollbar__bar', 'is-' + bar.value.key],
@@ -164,7 +169,6 @@ export default {
     }
   }, */
 
-  destroyed() {
-    off(document, 'mouseup', this.mouseUpDocumentHandler);
-  }
+  /*  destroyed() {
+  }*/
 };

@@ -1,12 +1,15 @@
 // reference https://github.com/noeldelgado/gemini-scrollbar/blob/master/index.js
 
-import { h, ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { h, ref, onMounted, onBeforeUnmount, nextTick,provide,inject } from 'vue'
 import { addResizeListener, removeResizeListener } from 'src/utils/resize-event'
 import scrollbarWidth from 'src/utils/scrollbar-width'
 import { toObject } from 'src/utils/util'
 import Bar from './bar'
-import Test from './test'
 
+const WRAPSYMBOL = Symbol()
+export function useWrap() {
+  return inject(WRAPSYMBOL)
+}
 /* istanbul ignore next */
 export default {
   name: 'ElScrollbar',
@@ -69,8 +72,8 @@ export default {
     }
 
     onMounted(() => {
-      if (props.native) return;
-      nextTick(update);
+      if (props.native) return
+      nextTick(update)
       !props.noresize && addResizeListener(resize.value, update);
     })
 
@@ -111,7 +114,7 @@ export default {
         </div>*/
       const _wrap = h('div', {
         ref: wrap,
-        style: { style },
+        style,
         onScroll: handleScroll,
         class: [props.wrapClass, 'el-scrollbar__wrap', gutter ? '' : 'el-scrollbar__wrap--hidden-default']
       }, [view])
@@ -168,6 +171,11 @@ export default {
 
       return h('div', { class: 'el-scrollbar' }, nodes)
     }
+    provide(WRAPSYMBOL, wrap)
+
+    onMounted(() => {
+
+    })
 
     return render
   },

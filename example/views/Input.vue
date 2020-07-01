@@ -3,131 +3,130 @@
     <h3>input</h3>
     <div>
       <h3>基础用法</h3>
-      <el-input v-model="input" placeholder="请输入内容"></el-input>
+      <el-input
+        v-model="input"
+        placeholder="请输入内容"
+      />
     </div>
     <div>
       <h3>禁用状态</h3>
       <el-input
-        placeholder="请输入内容"
         v-model="input"
-        :disabled="true">
-      </el-input>
+        placeholder="请输入内容"
+        :disabled="true"
+      />
     </div>
     <div>
       <h3>可清空</h3>
       <el-input
-        placeholder="请输入内容"
         v-model="input"
-        clearable>
-      </el-input>
+        placeholder="请输入内容"
+        clearable
+      />
     </div>
     <div>
       <h3>文本域</h3>
       <el-input
+        v-model="textarea"
         type="textarea"
         :rows="2"
         placeholder="请输入内容"
-        v-model="textarea">
-      </el-input>
+      />
     </div>
     <div>
       <h3>自适应高度</h3>
       <el-input
+        v-model="textarea"
         type="textarea"
         autosize
         placeholder="请输入内容"
-        v-model="textarea">
-      </el-input>
-      <div style="margin: 20px 0;"></div>
+      />
+      <div style="margin: 20px 0;" />
       <el-input
+        v-model="textarea"
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 4}"
         placeholder="请输入内容"
-        v-model="textarea">
-      </el-input>
+      />
     </div>
     <div>
       <h3>复合型输入框</h3>
-      <el-input placeholder="请输入内容" v-model="input2">
-        <template v-slot:prepend>Http://</template>
+      <el-input
+        v-model="input2"
+        placeholder="请输入内容"
+      >
+        <template #prepend>
+          Http://
+        </template>
       </el-input>
     </div>
     <div style="margin-top: 15px;">
-      <el-input placeholder="请输入内容" v-model="input2">
-        <template v-slot:append>.com</template>
+      <el-input
+        v-model="input2"
+        placeholder="请输入内容"
+      >
+        <template #append>
+          .com
+        </template>
       </el-input>
     </div>
     <div style="margin-top: 15px">
-      <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
-        <template v-slot:append>
-          <el-button icon="el-icon-search"></el-button>
+      <el-input
+        v-model="input3"
+        placeholder="请输入内容"
+        class="input-with-select"
+      >
+        <template #append>
+          <el-button icon="el-icon-search" />
         </template>
       </el-input>
     </div>
     <div>
       <h3>尺寸</h3>
       <el-input
+        v-model="input1"
         placeholder="请输入内容"
         suffix-icon="el-icon-date"
-        v-model="input1">
-      </el-input>
+      />
       <el-input
+        v-model="input2"
         size="medium"
         placeholder="请输入内容"
         suffix-icon="el-icon-date"
-        v-model="input2">
-      </el-input>
+      />
       <el-input
+        v-model="input3"
         size="small"
         placeholder="请输入内容"
         suffix-icon="el-icon-date"
-        v-model="input3">
-      </el-input>
+      />
       <el-input
+        v-model="input4"
         size="mini"
         placeholder="请输入内容"
         suffix-icon="el-icon-date"
-        v-model="input4">
-      </el-input>
+      />
     </div>
     <div>
       <h3>激活即列出输入建议</h3>
       <el-input
-        class="inline-input"
         v-model="state1"
+        class="inline-input"
         :fetch-suggestions="querySearch"
         placeholder="请输入内容"
         @select="handleSelect"
-      ></el-input>
+      />
     </div>
-    <el-scrollbar style="height: 100px">
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-      <div>第一行</div>
-    </el-scrollbar>
   </div>
 </template>
 
 <script>
   import {ref, watch} from 'vue'
-  import ElScrollbar from "packages/scrollbar/src/main";
+  // import ElScrollbar from "packages/scrollbar/src/main";
 
   export default {
     name: "Input",
-    components: {ElScrollbar},
+    components: {},
     setup() {
       const input = ref('')
       const textarea = ref('123')
