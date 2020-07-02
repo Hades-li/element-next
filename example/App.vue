@@ -22,7 +22,7 @@
       input
     </button>
     <el-scrollbar class="components-page">
-      <router-view />
+      <router-view style="width: 2000px;padding: 15px" />
     </el-scrollbar>
   </div>
 </template>
@@ -56,7 +56,6 @@ export default {
 <style scoped>
   .main-wrap {
     box-sizing: border-box;
-    padding: 15px;
     height: 100%;
   }
 img {

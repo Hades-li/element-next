@@ -189,8 +189,8 @@
         console.log('tx:', val)
       })
       function querySearch(queryString, cb) {
-        const restaurants = restaurants.value;
-        const results = queryString ? restaurants.filter(createFilter(queryString)) : restaurants;
+        // const restaurants = restaurants.value;
+        const results = queryString ? restaurants.value.filter(createFilter(queryString)) : restaurants.value;
         // 调用 callback 返回建议列表的数据
         cb(results);
       }

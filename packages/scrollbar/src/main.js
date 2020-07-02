@@ -7,6 +7,7 @@ import { toObject } from 'src/utils/util'
 import Bar from './bar'
 
 const WRAPSYMBOL = Symbol()
+// 将wrap的dom节点提供给子组件
 export function useWrap() {
   return inject(WRAPSYMBOL)
 }
@@ -85,7 +86,7 @@ export default {
     function render () {
       let gutter = scrollbarWidth()
       let style = props.wrapStyle
-
+      // debugger
       if (gutter) {
         const gutterWith = `-${gutter}px`
         const gutterStyle = `margin-bottom: ${gutterWith}; margin-right: ${gutterWith};`
@@ -103,7 +104,7 @@ export default {
         class: ['el-scrollbar__view', props.viewClass],
         style: props.viewStyle,
         ref: resize
-      }, ctx.slots)
+      }, ctx.slots.default())
       /*const wrap =
         <div
           ref="wrap"
@@ -116,7 +117,7 @@ export default {
         ref: wrap,
         style,
         onScroll: handleScroll,
-        class: [props.wrapClass, 'el-scrollbar__wrap', gutter ? '' : 'el-scrollbar__wrap--hidden-default']
+        class: [props.wrapClass, 'el-scrollbar__wrap', gutter ? 'el-scrollbar__wrap--hidden-default' : '']
       }, [view])
 
       let nodes = undefined

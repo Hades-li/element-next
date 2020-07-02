@@ -83,6 +83,15 @@ export default {
       document.onselectstart = null;
     }
 
+    function mouseover(e) {
+
+
+    }
+
+    function mouseout(e) {
+
+    }
+
     onUnmounted(() => {
       off(document, 'mouseup', mouseUpDocumentHandler);
     })
@@ -95,6 +104,8 @@ export default {
       ref: thumb,
       class: 'el-scrollbar__thumb',
       onMousedown: clickThumbHandler,
+      onMouseover: mouseover,
+      onMouseout: mouseout,
       style: renderThumbStyle({
         size: props.size,
         move: props.move,

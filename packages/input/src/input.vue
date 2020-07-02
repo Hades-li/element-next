@@ -1,35 +1,40 @@
 <template>
-  <div :class="[
-    type === 'textarea' ? 'el-textarea' : 'el-input',
-    inputSize ? 'el-input--' + inputSize : '',
-    {
-      'is-disabled': inputDisabled,
-      'is-exceed': inputExceed,
-      'el-input-group': slots.prepend || slots.append,
-      'el-input-group--append': slots.append,
-      'el-input-group--prepend': slots.prepend,
-      'el-input--prefix': slots.prefix || prefixIcon,
-      'el-input--suffix': slots.suffix || suffixIcon || clearable || showPassword
-    }
+  <div
+    :class="[
+      type === 'textarea' ? 'el-textarea' : 'el-input',
+      inputSize ? 'el-input--' + inputSize : '',
+      {
+        'is-disabled': inputDisabled,
+        'is-exceed': inputExceed,
+        'el-input-group': slots.prepend || slots.append,
+        'el-input-group--append': slots.append,
+        'el-input-group--prepend': slots.prepend,
+        'el-input--prefix': slots.prefix || prefixIcon,
+        'el-input--suffix': slots.suffix || suffixIcon || clearable || showPassword
+      }
     ]"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
     <template v-if="type !== 'textarea'">
       <!-- 前置元素 -->
-      <div class="el-input-group__prepend" v-if="slots.prepend">
-        <slot name="prepend"></slot>
+      <div
+        v-if="slots.prepend"
+        class="el-input-group__prepend"
+      >
+        <slot name="prepend" />
       </div>
       <input
-        :tabindex="tabindex"
         v-if="type !== 'textarea'"
+        ref="input"
+        :tabindex="tabindex"
         class="el-input__inner"
         v-bind="attrs"
         :type="showPassword ? (passwordVisible ? 'text': 'password') : type"
         :disabled="inputDisabled"
         :readonly="readonly"
         :autocomplete="autoComplete || autocomplete"
-        ref="input"
+        :aria-label="label"
         @compositionstart="handleCompositionStart"
         @compositionupdate="handleCompositionUpdate"
         @compositionend="handleCompositionEnd"
@@ -37,83 +42,109 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @change="handleChange"
-        :aria-label="label"
       >
       <!-- 前置内容 -->
-      <span class="el-input__prefix" v-if="slots.prefix || prefixIcon">
-        <slot name="prefix"></slot>
-        <i class="el-input__icon"
-           v-if="prefixIcon"
-           :class="prefixIcon">
-        </i>
+      <span
+        v-if="slots.prefix || prefixIcon"
+        class="el-input__prefix"
+      >
+        <slot name="prefix" />
+        <i
+          v-if="prefixIcon"
+          class="el-input__icon"
+          :class="prefixIcon"
+        />
       </span>
       <!-- 后置内容 -->
       <span
+        v-if="getSuffixVisible()"
         class="el-input__suffix"
-        v-if="getSuffixVisible()">
+      >
         <span class="el-input__suffix-inner">
           <template v-if="!showClear || !showPwdVisible || !isWordLimitVisible">
-            <slot name="suffix"></slot>
-            <i class="el-input__icon"
+            <slot name="suffix" />
+            <i
               v-if="suffixIcon"
-              :class="suffixIcon">
-            </i>
+              class="el-input__icon"
+              :class="suffixIcon"
+            />
           </template>
-          <i v-if="showClear"
+          <i
+            v-if="showClear"
             class="el-input__icon el-icon-circle-close el-input__clear"
             @mousedown.prevent
             @click="clear"
-          ></i>
-          <i v-if="showPwdVisible"
+          />
+          <i
+            v-if="showPwdVisible"
             class="el-input__icon el-icon-view el-input__clear"
             @click="handlePasswordVisible"
-          ></i>
-          <span v-if="isWordLimitVisible" class="el-input__count">
+          />
+          <span
+            v-if="isWordLimitVisible"
+            class="el-input__count"
+          >
             <span class="el-input__count-inner">
               {{ textLength }}/{{ upperLimit }}
             </span>
           </span>
         </span>
-        <i class="el-input__icon"
+        <i
           v-if="validateState"
-          :class="['el-input__validateIcon', validateIcon]">
-        </i>
+          class="el-input__icon"
+          :class="['el-input__validateIcon', validateIcon]"
+        />
       </span>
       <!-- 后置元素 -->
-      <div class="el-input-group__append" v-if="$slots.append">
-        <slot name="append"></slot>
+      <div
+        v-if="$slots.append"
+        class="el-input-group__append"
+      >
+        <slot name="append" />
       </div>
     </template>
     <textarea
       v-else
+      ref="textarea"
       :tabindex="tabindex"
       class="el-textarea__inner"
-      @compositionstart="handleCompositionStart"
-      @compositionupdate="handleCompositionUpdate"
-      @compositionend="handleCompositionEnd"
-      @input="handleInput"
-      ref="textarea"
       v-bind="attrs"
       :disabled="inputDisabled"
       :readonly="readonly"
       :autocomplete="autoComplete || autocomplete"
       :style="textareaStyle"
+      :aria-label="label"
+      @compositionstart="handleCompositionStart"
+      @compositionupdate="handleCompositionUpdate"
+      @compositionend="handleCompositionEnd"
+      @input="handleInput"
       @focus="handleFocus"
       @blur="handleBlur"
       @change="handleChange"
-      :aria-label="label"
-    >
-    </textarea>
-    <span v-if="isWordLimitVisible && type === 'textarea'" class="el-input__count">{{ textLength }}/{{ upperLimit }}</span>
+    />
+    <span
+      v-if="isWordLimitVisible && type === 'textarea'"
+      class="el-input__count"
+    >{{ textLength }}/{{ upperLimit }}</span>
     <el-autocomplete-suggestions
+      v-if="fetchSuggestions"
+      :id="id"
+      ref="suggestionsComponent"
       visible-arrow
       :class="[popperClass ? popperClass : '']"
       :popper-options="popperOptions"
       :append-to-body="popperAppendToBody"
-      ref="suggestions"
       :placement="placement"
-      :id="id"
-    ></el-autocomplete-suggestions>
+    >
+      <li
+        v-for="(item, index) in suggestions"
+        :key="index"
+        :class="{'highlighted': highlightedIndex === index}"
+        @click="select(item)"
+      >
+        {{ item.value }}
+      </li>
+    </el-autocomplete-suggestions>
   </div>
 </template>
 <script>
@@ -140,13 +171,13 @@
 
     componentName: 'ElInput',
 
-    // mixins: [emitter, Migrating],
-
-    inheritAttrs: false,
-
     components: {
       ElAutocompleteSuggestions
     },
+
+    // mixins: [emitter, Migrating],
+
+    inheritAttrs: false,
 
     /*inject: {
       elForm: {
@@ -229,7 +260,14 @@
         type: Boolean,
         default: false
       },
-      fetchSuggestions: Function, // 用于建议的函数
+      fetchSuggestions: {
+        type: Function,
+        default: undefined
+      }, // 用于建议的函数
+      debounce: {
+        type: Number,
+        default: 300
+      },
     },
 
     setup(props, ctx) {
@@ -246,7 +284,13 @@
       const textarea = ref(null)
       const isServer = ref(false)
       const model = ref(props.modelValue)
-      const suggestions = ref(null)
+      // 以下是下拉菜单用掉的
+      const suggestions = ref([])
+      const suggestionsComponent = ref(null)
+      const suggestionDisabled = ref(false)
+      const loading = ref(false)
+      const highlightedIndex = ref(-1)
+      const activated = ref(false)
       // console.log(props.modelValue)
 
       // computed
@@ -315,6 +359,11 @@
         // show exceed style if length of initial value greater then maxlength
         return isWordLimitVisible.value &&
           (textLength.value > upperLimit.value);
+      })
+      const suggestionVisible = computed(() => {
+        // const suggestions = suggestions;
+        let isValidData = Array.isArray(suggestions.value) && suggestions.value.length > 0;
+        return (isValidData || loading.value) && activated.value;
       })
 
       // methods
@@ -385,22 +434,47 @@
           handleInput(event);
         }
       }
+      const debounceGetData = debounce((queryString) => {
+        if (suggestionDisabled.value) {
+          return;
+        }
+        loading.value = true;
+        props.fetchSuggestions(queryString, (results) => {
+          loading.value = false;
+          if (suggestionDisabled.value) {
+            return;
+          }
+          if (Array.isArray(results)) {
+            suggestions.value = results;
+            highlightedIndex.value = props.highlightFirstItem ? 0 : -1;
+          } else {
+            console.error('[Element Error][Autocomplete]autocomplete suggestions must be an array');
+          }
+        })
+      }, props.debounce)
+
       function handleInput(event) {
+        const value = event.target.value
         // should not emit input during composition
         // see: https://github.com/ElemeFE/element/issues/10516
         if (isComposing.value) return;
 
         // hack for https://github.com/ElemeFE/element/issues/8548
         // should remove the following line when we don't support IE
-        if (event.target.value === nativeInputValue.value) return;
+        if (value === nativeInputValue.value) return;
 
         // ctx.emit('input', event.target.value);
-        ctx.emit('update:modelValue', event.target.value)
+        ctx.emit('update:modelValue', value)
         // ensure native input value is controlled
         // see: https://github.com/ElemeFE/element/issues/12850
         nextTick(() => {
           setNativeInputValue()
         })
+        // 当有查询函数时，触发查询
+        if (props.fetchSuggestions && typeof props.fetchSuggestions === 'function'){
+          // debugger
+          debounceGetData(value)
+        }
       }
       function handleChange(event) {
         ctx.emit('change', event.target.value);
@@ -471,6 +545,14 @@
           updateIconOffset();
         })
       })
+
+      watchEffect(() => {
+        console.log('suggestionsVisible:', suggestionVisible)
+        if (getInput()) {
+          suggestionsComponent.value.visible(suggestions.value,getInput().offsetWidth)
+        }
+      })
+
       onMounted( () => {
         setNativeInputValue();
         resizeTextarea();
@@ -502,7 +584,11 @@
         upperLimit,
         validateIcon,
         textareaStyle,
-        suggestions, // 下拉建议列表
+
+        suggestions, // 下拉结果
+        suggestionsComponent,
+        highlightedIndex,
+        select,
         handleInput,
         handleCompositionStart,
         handleCompositionUpdate,

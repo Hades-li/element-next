@@ -6,26 +6,20 @@
       :class="{ 'is-loading': !parent.hideLoading && parent.loading }"
       :style="{ width: dropdownWidth }"
       role="region">
-      <!--<el-scrollbar
+      <el-scrollbar
         tag="ul"
         wrap-class="el-autocomplete-suggestion__wrap"
         view-class="el-autocomplete-suggestion__list">
         <li v-if="!parent.hideLoading && parent.loading"><i class="el-icon-loading"></i></li>
         <slot v-else>
         </slot>
-      </el-scrollbar>-->
-      <ul
-        class="el-autocomplete-suggestion__wrap el-autocomplete-suggestion__list">
-        <li v-if="!parent.hideLoading && parent.loading"><i class="el-icon-loading"></i></li>
-        <slot v-else>
-        </slot>
-      </ul>
+      </el-scrollbar>
     </div>
   </transition>
 </template>
 <script>
   import { ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance } from 'vue'
-  import Popper from 'src/utils/vue-popper';
+  // import Popper from 'src/utils/vue-popper';
   import Emitter from 'src/mixins/emitter';
   import ElScrollbar from 'packages/scrollbar';
   import { useInput } from "packages/input/src/input";
@@ -43,17 +37,10 @@
   })
   // console.log(props)
   export default {
-    // components: { ElScrollbar },
+    components: { ElScrollbar },
     // mixins: [Popper, Emitter],
 
     componentName: 'ElAutocompleteSuggestions',
-
-    data() {
-      return {
-        parent: this.$parent,
-        dropdownWidth: ''
-      };
-    },
 
     /*props: {
       options: {
@@ -71,6 +58,7 @@
       const instance = getCurrentInstance()
       const dropdownWidth = ref('')
       const showPopper = ref(false)
+      const parent = ref(instance.parent)
       let referenceList = undefined
       // methods
       function select(item) {
@@ -98,9 +86,16 @@
         showPopper,
         hideLoading: input.hideLoading,
         el: instance.vnode.el,
+        parent,
         visible,
       }
     },
+    /*data() {
+      return {
+        parent: this.$parent,
+        dropdownWidth: ''
+      };
+    },*/
     /*methods: {
       select(item) {
         this.dispatch('ElAutocomplete', 'item-click', item);
