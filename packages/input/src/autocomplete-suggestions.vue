@@ -23,7 +23,7 @@
   import Emitter from 'src/mixins/emitter';
   import ElScrollbar from 'packages/scrollbar';
   import { useInput } from "packages/input/src/input";
-  import { mixinProps } from "src/utils/vue-popper";
+  import { mixinProps, usePopper } from "src/utils/vue-popper";
 
   const props = mixinProps({
     options: {
@@ -54,10 +54,10 @@
     },*/
     props,
     setup(props, ctx) {
+      const {showPopper, doDestroy} = usePopper(props, ctx)
       const input = useInput()
       const instance = getCurrentInstance()
       const dropdownWidth = ref('')
-      const showPopper = ref(false)
       const parent = ref(instance.parent)
       let referenceList = undefined
       // methods
@@ -87,6 +87,7 @@
         hideLoading: input.hideLoading,
         el: instance.vnode.el,
         parent,
+        doDestroy,
         visible,
       }
     },

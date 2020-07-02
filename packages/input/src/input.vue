@@ -268,6 +268,10 @@
         type: Number,
         default: 300
       },
+      triggerOnFocus: {
+        type: Boolean,
+        default: true
+      },
     },
 
     setup(props, ctx) {
@@ -386,6 +390,7 @@
       }
       function handleBlur(event) {
         focused.value = false;
+        activated.value = false
         ctx.emit('blur', event);
         if (props.validateEvent) {
           // this.dispatch('ElFormItem', 'el.form.blur', [this.value]);
@@ -417,7 +422,12 @@
         input.value = nativeInputValue.value;
       }
       function handleFocus(event) {
+        const value = event.target.value
         focused.value = true;
+        if (props.triggerOnFocus) {
+          debounceGetData(value)
+        }
+        activated.value = true
         ctx.emit('focus', event);
       }
       function handleCompositionStart() {
@@ -507,6 +517,7 @@
         calcIconOffset('suffix');
       }
       function clear() {
+        activated.value = false
         ctx.emit('update:modelValue', '');
         ctx.emit('change', '');
         ctx.emit('clear');
@@ -547,9 +558,9 @@
       })
 
       watchEffect(() => {
-        console.log('suggestionsVisible:', suggestionVisible)
-        if (getInput()) {
-          suggestionsComponent.value.visible(suggestions.value,getInput().offsetWidth)
+        console.log('suggestionsVisible:', suggestionVisible.value)
+        if (getInput() && suggestionsComponent.value) {
+          suggestionsComponent.value.visible(suggestionVisible.value, getInput().offsetWidth)
         }
       })
 
