@@ -1,18 +1,24 @@
 <template>
-  <transition name="el-zoom-in-top" @after-leave="doDestroy">
+  <transition
+    name="el-zoom-in-top"
+    @after-leave="doDestroy"
+  >
     <div
       v-show="showPopper"
       class="el-autocomplete-suggestion el-popper"
       :class="{ 'is-loading': !parent.hideLoading && parent.loading }"
       :style="{ width: dropdownWidth }"
-      role="region">
+      role="region"
+    >
       <el-scrollbar
         tag="ul"
         wrap-class="el-autocomplete-suggestion__wrap"
-        view-class="el-autocomplete-suggestion__list">
-        <li v-if="!parent.hideLoading && parent.loading"><i class="el-icon-loading"></i></li>
-        <slot v-else>
-        </slot>
+        view-class="el-autocomplete-suggestion__list"
+      >
+        <li v-if="!parent.hideLoading && parent.loading">
+          <i class="el-icon-loading" />
+        </li>
+        <slot v-else />
       </el-scrollbar>
     </div>
   </transition>
@@ -20,12 +26,13 @@
 <script>
   import { ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance } from 'vue'
   // import Popper from 'src/utils/vue-popper';
+  import {mixinProps, usePopper } from 'src/mixins/vuePopper'
   import Emitter from 'src/mixins/emitter';
   import ElScrollbar from 'packages/scrollbar';
   import { useInput } from "packages/input/src/input";
-  import { mixinProps, usePopper } from "src/utils/vue-popper";
+  // import { mixinProps, usePopper } from "src/utils/vue-popper";
 
-  const props = mixinProps({
+  /*const props = mixinProps({
     options: {
       default() {
         return {
@@ -34,7 +41,7 @@
       }
     },
     id: String
-  })
+  })*/
   // console.log(props)
   export default {
     components: { ElScrollbar },
@@ -42,24 +49,29 @@
 
     componentName: 'ElAutocompleteSuggestions',
 
-    /*props: {
+    props: {
       options: {
+        type: Object,
         default() {
           return {
             gpuAcceleration: false
           };
         }
       },
-      id: String
-    },*/
-    props,
+      id: {
+        type: String,
+        default: '102'
+      }
+    },
     setup(props, ctx) {
-      const {showPopper, doDestroy} = usePopper(props, ctx)
-      const input = useInput()
       const instance = getCurrentInstance()
+      let popper = usePopper()
+      const input = useInput()
       const dropdownWidth = ref('')
+      const showPopper = ref(false)
       const parent = ref(instance.parent)
       let referenceList = undefined
+
       // methods
       function select(item) {
         // this.dispatch('ElAutocomplete', 'item-click', item);
@@ -77,7 +89,9 @@
       })
 
       onUpdated(() => {
+        debugger
         nextTick(() => {
+          // popper.create(referenceElement, popperElement)
           // this.popperJS && this.updatePopper();
         })
       })
@@ -87,7 +101,7 @@
         hideLoading: input.hideLoading,
         el: instance.vnode.el,
         parent,
-        doDestroy,
+        doDestroy: popper.destroyPopper,
         visible,
       }
     },

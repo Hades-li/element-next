@@ -570,6 +570,7 @@
         updateIconOffset();
       })
       onUpdated(() => {
+        debugger
         nextTick(updateIconOffset);
       })
 
