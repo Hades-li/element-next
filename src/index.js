@@ -57,7 +57,7 @@ import Col from '../packages/col/index.js'
 // import Steps from '../packages/steps/index.js';
 // import Step from '../packages/step/index.js';
 // import Carousel from '../packages/carousel/index.js';
-// import Scrollbar from '../packages/scrollbar/index.js';
+import Scrollbar from '../packages/scrollbar/index.js';
 // import CarouselItem from '../packages/carousel-item/index.js';
 // import Collapse from '../packages/collapse/index.js';
 // import CollapseItem from '../packages/collapse-item/index.js';
@@ -138,7 +138,7 @@ const components = [
   // Steps,
   // Step,
   // Carousel,
-  // Scrollbar,
+  Scrollbar,
   // CarouselItem,
   // Collapse,
   // CollapseItem,

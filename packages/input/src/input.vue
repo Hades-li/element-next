@@ -1,5 +1,6 @@
 <template>
   <div
+    v-clickoutside="close"
     :class="[
       type === 'textarea' ? 'el-textarea' : 'el-input',
       inputSize ? 'el-input--' + inputSize : '',
@@ -130,7 +131,6 @@
       v-if="fetchSuggestions"
       :id="id"
       ref="suggestionsComponent"
-      visible-arrow
       :class="[popperClass ? popperClass : '']"
       :popper-options="popperOptions"
       :append-to-body="popperAppendToBody"
@@ -140,7 +140,7 @@
         v-for="(item, index) in suggestions"
         :key="index"
         :class="{'highlighted': highlightedIndex === index}"
-        @click="select(item)"
+        @click="itemClick(item)"
       >
         {{ item.value }}
       </li>
@@ -152,6 +152,7 @@
   import {useElForm} from "packages/form/src/form";
   import {useElFormItem} from "packages/form/src/form-item";
   import {useELEMENT} from "src/index";
+  import clickoutside from 'src/utils/clickoutside.js'
   import emitter from 'src/mixins/emitter';
   import Migrating from 'src/mixins/migrating';
   import calcTextareaHeight from './calcTextareaHeight';
@@ -159,6 +160,7 @@
   import {isKorean} from 'src/utils/shared';
   import ElAutocompleteSuggestions from './autocomplete-suggestions'
   import debounce from 'lodash/debounce'
+  import test from '@/views/test'
 
   const INPUTSYMBOL = Symbol('Input')
 
@@ -172,9 +174,11 @@
     componentName: 'ElInput',
 
     components: {
-      ElAutocompleteSuggestions
+      ElAutocompleteSuggestions,
+      // test
     },
 
+    directives: { clickoutside },
     // mixins: [emitter, Migrating],
 
     inheritAttrs: false,
@@ -295,7 +299,7 @@
       const loading = ref(false)
       const highlightedIndex = ref(-1)
       const activated = ref(false)
-      // console.log(props.modelValue)
+      const test = ref(null)
 
       // computed
       const _elFormItemSize = computed(() => {
@@ -375,6 +379,7 @@
         getInput().focus();
       }
       function blur() {
+        console.log('blur')
         getInput().blur();
       }
       function getMigratingConfig() {
@@ -389,16 +394,28 @@
         };
       }
       function handleBlur(event) {
-        focused.value = false;
-        activated.value = false
+        focused.value = false
         ctx.emit('blur', event);
         if (props.validateEvent) {
           // this.dispatch('ElFormItem', 'el.form.blur', [this.value]);
           elFormItem?.onFieldBlur()
         }
       }
-      function select() {
-        getInput().select();
+      function itemClick(item) {
+        if (props.fetchSuggestions) {
+          ctx.emit('update:modelValue', item.value)
+          ctx.emit('select', item)
+          nextTick(() => {
+            console.log(item)
+            suggestions.value = []
+          })
+        } else {
+          getInput().select();
+        }
+      }
+      function close() {
+        debugger
+        activated.value = false
       }
       function resizeTextarea() {
         if (isServer.value) return;
@@ -423,12 +440,12 @@
       }
       function handleFocus(event) {
         const value = event.target.value
-        focused.value = true;
-        if (props.triggerOnFocus) {
+        focused.value = true
+        if (props.triggerOnFocus && props.fetchSuggestions) {
           debounceGetData(value)
         }
         activated.value = true
-        ctx.emit('focus', event);
+        ctx.emit('focus', event)
       }
       function handleCompositionStart() {
         isComposing.value = true;
@@ -482,7 +499,6 @@
         })
         // 当有查询函数时，触发查询
         if (props.fetchSuggestions && typeof props.fetchSuggestions === 'function'){
-          // debugger
           debounceGetData(value)
         }
       }
@@ -537,9 +553,6 @@
           isWordLimitVisible.value ||
           (validateState.value && needStatusIcon.value);
       }
-      function itemClick(item) {
-
-      }
 
       // watch
       watch(toRef(props, 'modelValue'), (val) => {
@@ -557,10 +570,15 @@
         })
       })
 
-      watchEffect(() => {
-        console.log('suggestionsVisible:', suggestionVisible.value)
+      /*watchEffect(() => {
+        // console.log('suggestionsVisible:', suggestionVisible.value)
         if (getInput() && suggestionsComponent.value) {
           suggestionsComponent.value.visible(suggestionVisible.value, getInput().offsetWidth)
+        }
+      })*/
+      watch(suggestionVisible, (val) => {
+        if (getInput() && suggestionsComponent.value) {
+          suggestionsComponent.value.visible(val, getInput().offsetWidth)
         }
       })
 
@@ -570,7 +588,6 @@
         updateIconOffset();
       })
       onUpdated(() => {
-        debugger
         nextTick(updateIconOffset);
       })
 
@@ -580,6 +597,7 @@
         hideLoading: props.hideLoading,
         itemClick
       })
+
       return {
         slots: ctx.slots,
         attrs: ctx.attrs,
@@ -600,7 +618,7 @@
         suggestions, // 下拉结果
         suggestionsComponent,
         highlightedIndex,
-        select,
+        itemClick,
         handleInput,
         handleCompositionStart,
         handleCompositionUpdate,
@@ -611,6 +629,8 @@
         handleBlur,
         handleChange,
         handleFocus,
+        close,
+        test
       }
     },
     computed: {

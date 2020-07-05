@@ -1,6 +1,6 @@
 <template>
   <transition
-    name="el-zoom-in-top"
+    name="el-fade-in-top"
     @after-leave="doDestroy"
   >
     <div
@@ -9,6 +9,7 @@
       :class="{ 'is-loading': !parent.hideLoading && parent.loading }"
       :style="{ width: dropdownWidth }"
       role="region"
+      :x-placement="placement"
     >
       <el-scrollbar
         tag="ul"
@@ -24,15 +25,11 @@
   </transition>
 </template>
 <script>
-  import { ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance } from 'vue'
-  // import Popper from 'src/utils/vue-popper';
-  import {mixinProps, usePopper } from 'src/mixins/vuePopper'
-  import Emitter from 'src/mixins/emitter';
-  import ElScrollbar from 'packages/scrollbar';
-  import { useInput } from "packages/input/src/input";
-  // import { mixinProps, usePopper } from "src/utils/vue-popper";
+  import {ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance} from 'vue'
+  import {mixinProps, usePopper} from 'src/mixins/vuePopper'
+  import {useInput} from "packages/input/src/input";
 
-  /*const props = mixinProps({
+  const props = mixinProps({
     options: {
       default() {
         return {
@@ -41,16 +38,13 @@
       }
     },
     id: String
-  })*/
-  // console.log(props)
+  })
   export default {
-    components: { ElScrollbar },
-    // mixins: [Popper, Emitter],
 
     componentName: 'ElAutocompleteSuggestions',
 
-    props: {
-      options: {
+    /*props: {
+      popperOptions: {
         type: Object,
         default() {
           return {
@@ -62,10 +56,11 @@
         type: String,
         default: '102'
       }
-    },
-    setup(props, ctx) {
+    },*/
+    props,
+    setup(props) {
       const instance = getCurrentInstance()
-      let popper = usePopper()
+      let popper = usePopper(props)
       const input = useInput()
       const dropdownWidth = ref('')
       const showPopper = ref(false)
@@ -75,11 +70,24 @@
       // methods
       function select(item) {
         // this.dispatch('ElAutocomplete', 'item-click', item);
-        input.itemClick(item)
+        // input.itemClick(item)
       }
+
       function visible(val, inputWidth) {
         dropdownWidth.value = inputWidth + 'px'
         showPopper.value = val
+        //  打开
+        if (val) {
+          nextTick(() => {
+            popper.show()
+          })
+        } else {
+          popper.update()
+        }
+      }
+
+      function doDestroy() {
+        popper.destroy()
       }
 
       onMounted(() => {
@@ -89,11 +97,7 @@
       })
 
       onUpdated(() => {
-        debugger
-        nextTick(() => {
-          // popper.create(referenceElement, popperElement)
-          // this.popperJS && this.updatePopper();
-        })
+        // console.log(showPopper.value)
       })
 
       return {
@@ -101,7 +105,9 @@
         hideLoading: input.hideLoading,
         el: instance.vnode.el,
         parent,
-        doDestroy: popper.destroyPopper,
+        dropdownWidth,
+        placement: popper.placement,
+        doDestroy,
         visible,
       }
     },

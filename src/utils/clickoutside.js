@@ -1,15 +1,16 @@
 import Vue from 'vue';
-import { on } from 'element-ui/src/utils/dom';
+import { on } from 'src/utils/dom';
 
 const nodeList = [];
 const ctx = '@@clickoutsideContext';
 
 let startClick;
 let seed = 0;
+const isServer = false
 
-!Vue.prototype.$isServer && on(document, 'mousedown', e => (startClick = e));
+!isServer && on(document, 'mousedown', e => (startClick = e));
 
-!Vue.prototype.$isServer && on(document, 'mouseup', e => {
+!isServer && on(document, 'mouseup', e => {
   nodeList.forEach(node => node[ctx].documentHandler(e, startClick));
 });
 
@@ -45,7 +46,7 @@ function createDocumentHandler(el, binding, vnode) {
  * ```
  */
 export default {
-  bind(el, binding, vnode) {
+  beforeMount(el, binding, vnode) {
     nodeList.push(el);
     const id = seed++;
     el[ctx] = {
@@ -56,13 +57,13 @@ export default {
     };
   },
 
-  update(el, binding, vnode) {
+  updated(el, binding, vnode) {
     el[ctx].documentHandler = createDocumentHandler(el, binding, vnode);
     el[ctx].methodName = binding.expression;
     el[ctx].bindingFn = binding.value;
   },
 
-  unbind(el) {
+  unmounted(el) {
     let len = nodeList.length;
 
     for (let i = 0; i < len; i++) {

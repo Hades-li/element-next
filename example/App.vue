@@ -22,7 +22,7 @@
       input
     </button>
     <el-scrollbar class="components-page">
-      <router-view style="width: 2000px;padding: 15px" />
+      <router-view style="padding: 15px" />
     </el-scrollbar>
   </div>
 </template>
@@ -30,9 +30,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import ElScrollbar from "packages/scrollbar/src/main";
 export default {
-  components: {ElScrollbar},
   setup(props, ctx) {
     const router = useRouter()
     const pushTo = (path) => {

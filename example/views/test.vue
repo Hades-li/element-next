@@ -1,22 +1,33 @@
 <template>
-  <div v-show="visible">
-    1235
-  </div>
-  <button @click="visible = !visible">
-    点击
-  </button>
+  <transition name="el-zoom-in-top">
+    <div v-show="visible">
+      <span>1235</span>
+      <button @click="sw">
+        点击
+      </button>
+    </div>
+  </transition>
 </template>
 
 <script>
-export default {
-  name: 'Test',
-  setup(props, ctx) {
-    const visible = ref(false)
-    return {
-      visible
+  import {ref, onUpdated, getCurrentInstance} from 'vue'
+
+  export default {
+    name: 'Test',
+    setup(props, ctx) {
+      const visible = ref(true)
+      function sw() {
+        visible.value = !visible.value
+      }
+      onUpdated(() => {
+        console.log(visible.value)
+      }, getCurrentInstance())
+      return {
+        visible,
+        sw
+      }
     }
   }
-}
 </script>
 
 <style scoped>
