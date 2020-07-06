@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { on } from 'src/utils/dom';
 
 const nodeList = [];
@@ -8,14 +7,19 @@ let startClick;
 let seed = 0;
 const isServer = false
 
-!isServer && on(document, 'mousedown', e => (startClick = e));
+!isServer && on(document, 'mousedown', e => {
+  return (startClick = e)
+});
 
 !isServer && on(document, 'mouseup', e => {
-  nodeList.forEach(node => node[ctx].documentHandler(e, startClick));
+  nodeList.forEach(node => {
+    node[ctx].documentHandler(e, startClick)
+  });
 });
 
 function createDocumentHandler(el, binding, vnode) {
   return function(mouseup = {}, mousedown = {}) {
+    debugger
     if (!vnode ||
       !vnode.context ||
       !mouseup.target ||
@@ -27,7 +31,7 @@ function createDocumentHandler(el, binding, vnode) {
       (vnode.context.popperElm.contains(mouseup.target) ||
       vnode.context.popperElm.contains(mousedown.target)))) return;
 
-    if (binding.expression &&
+    if (binding.value &&
       el[ctx].methodName &&
       vnode.context[el[ctx].methodName]) {
       vnode.context[el[ctx].methodName]();
@@ -47,19 +51,23 @@ function createDocumentHandler(el, binding, vnode) {
  */
 export default {
   beforeMount(el, binding, vnode) {
+    console.log(binding)
+    console.log(vnode)
     nodeList.push(el);
     const id = seed++;
     el[ctx] = {
       id,
       documentHandler: createDocumentHandler(el, binding, vnode),
-      methodName: binding.expression,
+      methodName: binding.value.name,
       bindingFn: binding.value
     };
+    console.log('v-clickout:', el[ctx])
   },
 
   updated(el, binding, vnode) {
+    debugger
     el[ctx].documentHandler = createDocumentHandler(el, binding, vnode);
-    el[ctx].methodName = binding.expression;
+    el[ctx].methodName = binding.value.name;
     el[ctx].bindingFn = binding.value;
   },
 

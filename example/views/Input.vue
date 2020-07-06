@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>input</h3>
-    <div>
+<!--    <div>
       <h3>基础用法</h3>
       <el-input
         v-model="input"
@@ -48,7 +48,7 @@
         :autosize="{ minRows: 2, maxRows: 4}"
         placeholder="请输入内容"
       />
-    </div>
+    </div>-->
     <div>
       <h3>激活即列出输入建议</h3>
       <el-input
@@ -59,7 +59,7 @@
         @select="handleSelect"
       />
     </div>
-    <div>
+<!--    <div>
       <h3>复合型输入框</h3>
       <div>
         <el-input
@@ -118,8 +118,7 @@
         placeholder="请输入内容"
         suffix-icon="el-icon-date"
       />
-    </div>
-
+    </div>-->
   </div>
 </template>
 
