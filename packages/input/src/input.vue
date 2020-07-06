@@ -301,6 +301,7 @@
       const activated = ref(false)
       const test = ref(null)
 
+      console.log(instance.vnode)
       // computed
       const _elFormItemSize = computed(() => {
         return (elFormItem || {}).elFormItemSize;
@@ -406,7 +407,6 @@
           ctx.emit('update:modelValue', item.value)
           ctx.emit('select', item)
           nextTick(() => {
-            console.log(item)
             suggestions.value = []
           })
         } else {
@@ -414,7 +414,6 @@
         }
       }
       function close() {
-        debugger
         activated.value = false
       }
       function resizeTextarea() {
