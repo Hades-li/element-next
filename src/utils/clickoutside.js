@@ -21,7 +21,6 @@ function createDocumentHandler(el, binding, vnode) {
   return function(mouseup = {}, mousedown = {}) {
     const instance = binding.instance
     const popperEl = instance.suggestionsComponent?.$el
-    console.log(binding.instance)
     if (!vnode ||
       !instance ||
       !mouseup.target ||
@@ -54,7 +53,6 @@ function createDocumentHandler(el, binding, vnode) {
 export default {
   beforeMount(el, binding, vnode) {
     // console.log(binding)
-    console.log(vnode)
     nodeList.push(el);
     const id = seed++;
     el[ctx] = {
@@ -67,7 +65,6 @@ export default {
   },
 
   updated(el, binding, vnode) {
-    debugger
     el[ctx].documentHandler = createDocumentHandler(el, binding, vnode);
     el[ctx].methodName = binding.value.name;
     el[ctx].bindingFn = binding.value;

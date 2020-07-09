@@ -60,6 +60,17 @@
       />
     </div>
     <div>
+      <h3>输入后匹配输入建议</h3>
+      <el-input
+        v-model="state1"
+        class="inline-input"
+        :fetch-suggestions="querySearch"
+        :trigger-on-focus="false"
+        placeholder="请输入内容"
+        @select="handleSelect"
+      />
+    </div>
+    <div>
       <h3>复合型输入框</h3>
       <div>
         <el-input
