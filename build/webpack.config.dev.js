@@ -19,11 +19,11 @@ module.exports = merge(baseConf({ NODE_ENV: env }), {
     publicPath: '/'
   },
   devServer: {
-    contentBase: './dist',
+    contentBase: resolve('dist'),
     port: 8080,
     hot: true,
     progress: true,
-    quiet: true,
+    quiet: false,
     historyApiFallback: true,
     overlay: {
       errors: true

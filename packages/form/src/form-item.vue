@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-  import {provide, inject, getCurrentInstance, computed, reactive, watch, watchEffect, nextTick, onMounted} from 'vue'
+  import {provide, inject, getCurrentInstance, computed, reactive, watch, watchEffect, nextTick, onMounted, onBeforeUnmount} from 'vue'
   import AsyncValidator from 'async-validator'
   import emitter from 'src/mixins/emitter'
   import objectAssign from 'src/utils/merge'
@@ -338,6 +338,9 @@
           // addValidateEvents()
         }
       })
+      onBeforeUnmount(() => {
+        elForm.removeField(instance)
+      })
 
       // provide
       provide(ELFORMITEMSYMBOL, {
@@ -469,9 +472,9 @@
         this.addValidateEvents()
       }*/
     },
-    beforeDestroy() {
+    /*beforeDestroy() {
       this.dispatch('ElForm', 'el.form.removeField', [this])
-    },
+    },*/
     /*data() {
       return {
         validateState: '',
