@@ -43,6 +43,10 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @change="handleChange"
+        @keydown.up.prevent="highlight(highlightedIndex - 1)"
+        @keydown.down.prevent="highlight(highlightedIndex + 1)"
+        @keydown.enter="handleKeyEnter"
+        @keydown.tab="close"
       >
       <!-- 前置内容 -->
       <span
@@ -552,6 +556,13 @@
           isWordLimitVisible.value ||
           (validateState.value && needStatusIcon.value);
       }
+      // 移动选中光标
+      function highlight(index) {
+        if (!suggestionVisible.value || loading.value) {
+          return
+        }
+
+      }
 
       // watch
       watch(toRef(props, 'modelValue'), (val) => {
@@ -617,6 +628,7 @@
         suggestions, // 下拉结果
         suggestionsComponent,
         highlightedIndex,
+        highlight,
         itemClick,
         handleInput,
         handleCompositionStart,
