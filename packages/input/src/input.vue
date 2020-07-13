@@ -23,7 +23,7 @@
         v-if="slots.prepend"
         class="el-input-group__prepend"
       >
-        <slot name="prepend" />
+        <slot name="prepend"/>
       </div>
       <input
         v-if="type !== 'textarea'"
@@ -53,7 +53,7 @@
         v-if="slots.prefix || prefixIcon"
         class="el-input__prefix"
       >
-        <slot name="prefix" />
+        <slot name="prefix"/>
         <i
           v-if="prefixIcon"
           class="el-input__icon"
@@ -67,7 +67,7 @@
       >
         <span class="el-input__suffix-inner">
           <template v-if="!showClear || !showPwdVisible || !isWordLimitVisible">
-            <slot name="suffix" />
+            <slot name="suffix"/>
             <i
               v-if="suffixIcon"
               class="el-input__icon"
@@ -105,7 +105,7 @@
         v-if="$slots.append"
         class="el-input-group__append"
       >
-        <slot name="append" />
+        <slot name="append"/>
       </div>
     </template>
     <textarea
@@ -143,6 +143,7 @@
       <li
         v-for="(item, index) in suggestions"
         :key="index"
+        :ref="el => elList[index] = el"
         :class="{'highlighted': highlightedIndex === index}"
         @click="itemClick(item)"
       >
@@ -152,19 +153,32 @@
   </div>
 </template>
 <script>
-  import { ref,toRef, reactive, computed, watch, watchEffect, nextTick, getCurrentInstance, onMounted, onUpdated, inject,provide } from 'vue'
-  import {useElForm} from "packages/form/src/form";
-  import {useElFormItem} from "packages/form/src/form-item";
-  import {useELEMENT} from "src/index";
+  import {
+    ref,
+    toRef,
+    reactive,
+    computed,
+    watch,
+    watchEffect,
+    nextTick,
+    getCurrentInstance,
+    onMounted,
+    onUpdated,
+    inject,
+    provide
+  } from 'vue'
+  import {useElForm} from "packages/form/src/form"
+  import {useElFormItem} from "packages/form/src/form-item"
+  import {useELEMENT} from "src/index"
   import clickoutside from 'src/utils/clickoutside.js'
-  import emitter from 'src/mixins/emitter';
-  import Migrating from 'src/mixins/migrating';
-  import calcTextareaHeight from './calcTextareaHeight';
-  import merge from 'src/utils/merge';
-  import {isKorean} from 'src/utils/shared';
-  import ElAutocompleteSuggestions from './autocomplete-suggestions'
+  // import emitter from 'src/mixins/emitter';
+  // import Migrating from 'src/mixins/migrating';
+  import calcTextareaHeight from './calcTextareaHeight'
+  import merge from 'src/utils/merge'
+  import {isKorean} from 'src/utils/shared'
+  import ElAutocompleteSuggestions,{useAutoSuggestions} from './autocomplete-suggestions'
   import debounce from 'lodash/debounce'
-  import test from '@/views/test'
+  // import test from '@/views/test'
 
   const INPUTSYMBOL = Symbol('Input')
 
@@ -182,7 +196,7 @@
       // test
     },
 
-    directives: { clickoutside },
+    directives: {clickoutside},
     // mixins: [emitter, Migrating],
 
     inheritAttrs: false,
@@ -230,8 +244,8 @@
         type: String,
         validator(val) {
           process.env.NODE_ENV !== 'production' &&
-            console.warn('[Element Warn][Input]\'auto-complete\' property will be deprecated in next major version. please use \'autocomplete\' instead.');
-          return true;
+          console.warn('[Element Warn][Input]\'auto-complete\' property will be deprecated in next major version. please use \'autocomplete\' instead.')
+          return true
         }
       },
       validateEvent: {
@@ -299,6 +313,7 @@
       // 以下是下拉菜单用掉的
       const suggestions = ref([])
       const suggestionsComponent = ref(null)
+      const elList = ref([])
       const suggestionDisabled = ref(false)
       const loading = ref(false)
       const highlightedIndex = ref(-1)
@@ -308,45 +323,45 @@
       console.log(instance.vnode)
       // computed
       const _elFormItemSize = computed(() => {
-        return (elFormItem || {}).elFormItemSize;
+        return (elFormItem || {}).elFormItemSize
       })
       const validateState = computed(() => {
-        return elFormItem ? elFormItem.validateState : '';
+        return elFormItem ? elFormItem.validateState : ''
       })
       const textareaStyle = computed(() => {
-        return merge({}, textareaCalcStyle.value, { resize: props.resize });
+        return merge({}, textareaCalcStyle.value, {resize: props.resize})
       })
       const inputSize = computed(() => {
-        return props.size || _elFormItemSize.value || (ELEMENT || {}).size;
+        return props.size || _elFormItemSize.value || (ELEMENT || {}).size
       })
       const inputDisabled = computed(() => {
-        return props.disabled || (elForm || {}).disabled;
+        return props.disabled || (elForm || {}).disabled
       })
       const needStatusIcon = computed(() => {
-        return elForm ? elForm.statusIcon : false;
+        return elForm ? elForm.statusIcon : false
       })
       const validateIcon = computed(() => {
         return {
           validating: 'el-icon-loading',
           success: 'el-icon-circle-check',
           error: 'el-icon-circle-close'
-        }[validateState.value];
+        }[validateState.value]
       })
       const nativeInputValue = computed(() => {
-        return props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue);
+        return props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue)
       })
       const showClear = computed(() => {
         return props.clearable &&
           !inputDisabled.value &&
           !props.readonly &&
           nativeInputValue.value &&
-          (focused.value || hovering.value);
+          (focused.value || hovering.value)
       })
       const showPwdVisible = computed(() => {
         return props.showPassword &&
           !inputDisabled.value &&
           !props.readonly &&
-          (!!nativeInputValue.value || focused.value);
+          (!!nativeInputValue.value || focused.value)
       })
 
       const isWordLimitVisible = computed(() => {
@@ -355,38 +370,40 @@
           (props.type === 'text' || props.type === 'textarea') &&
           !inputDisabled.value &&
           !props.readonly &&
-          !props.showPassword;
+          !props.showPassword
       })
 
-      const upperLimit= computed(() => {
-        return ctx.attrs.maxlength;
+      const upperLimit = computed(() => {
+        return ctx.attrs.maxlength
       })
-      const textLength = computed(() =>{
+      const textLength = computed(() => {
         if (typeof props.modelValue === 'number') {
-          return String(props.modelValue).length;
+          return String(props.modelValue).length
         }
 
-        return (props.modelValue || '').length;
+        return (props.modelValue || '').length
       })
-      const inputExceed = computed(()=> {
+      const inputExceed = computed(() => {
         // show exceed style if length of initial value greater then maxlength
         return isWordLimitVisible.value &&
-          (textLength.value > upperLimit.value);
+          (textLength.value > upperLimit.value)
       })
       const suggestionVisible = computed(() => {
         // const suggestions = suggestions;
-        let isValidData = Array.isArray(suggestions.value) && suggestions.value.length > 0;
-        return (isValidData || loading.value) && activated.value;
+        let isValidData = Array.isArray(suggestions.value) && suggestions.value.length > 0
+        return (isValidData || loading.value) && activated.value
       })
 
       // methods
       function focus() {
-        getInput().focus();
+        getInput().focus()
       }
+
       function blur() {
         console.log('blur')
-        getInput().blur();
+        getInput().blur()
       }
+
       function getMigratingConfig() {
         return {
           props: {
@@ -396,16 +413,18 @@
           events: {
             'click': 'click is removed.'
           }
-        };
+        }
       }
+
       function handleBlur(event) {
         focused.value = false
-        ctx.emit('blur', event);
+        ctx.emit('blur', event)
         if (props.validateEvent) {
           // this.dispatch('ElFormItem', 'el.form.blur', [this.value]);
           elFormItem?.onFieldBlur()
         }
       }
+
       function itemClick(item) {
         if (props.fetchSuggestions) {
           ctx.emit('update:modelValue', item.value)
@@ -414,33 +433,37 @@
             suggestions.value = []
           })
         } else {
-          getInput().select();
+          getInput().select()
         }
       }
+
       function close() {
         activated.value = false
       }
+
       function resizeTextarea() {
-        if (isServer.value) return;
-        const { autosize, type } = props;
-        if (type !== 'textarea') return;
+        if (isServer.value) return
+        const {autosize, type} = props
+        if (type !== 'textarea') return
         if (!autosize) {
           textareaCalcStyle.value = {
             minHeight: calcTextareaHeight(textarea.value).minHeight
-          };
-          return;
+          }
+          return
         }
-        const minRows = autosize.minRows;
-        const maxRows = autosize.maxRows;
+        const minRows = autosize.minRows
+        const maxRows = autosize.maxRows
 
-        textareaCalcStyle.value = calcTextareaHeight(textarea.value, minRows, maxRows);
+        textareaCalcStyle.value = calcTextareaHeight(textarea.value, minRows, maxRows)
       }
+
       function setNativeInputValue() {
-        const input = getInput();
-        if (!input) return;
-        if (input.value === nativeInputValue.value) return;
-        input.value = nativeInputValue.value;
+        const input = getInput()
+        if (!input) return
+        if (input.value === nativeInputValue.value) return
+        input.value = nativeInputValue.value
       }
+
       function handleFocus(event) {
         const value = event.target.value
         focused.value = true
@@ -450,35 +473,39 @@
         activated.value = true
         ctx.emit('focus', event)
       }
+
       function handleCompositionStart() {
-        isComposing.value = true;
+        isComposing.value = true
       }
+
       function handleCompositionUpdate(event) {
-        const text = event.target.value;
-        const lastCharacter = text[text.length - 1] || '';
-        isComposing.value = !isKorean(lastCharacter);
+        const text = event.target.value
+        const lastCharacter = text[text.length - 1] || ''
+        isComposing.value = !isKorean(lastCharacter)
       }
+
       function handleCompositionEnd(event) {
         if (isComposing.value) {
-          isComposing.value = false;
-          handleInput(event);
+          isComposing.value = false
+          handleInput(event)
         }
       }
+
       const debounceGetData = debounce((queryString) => {
         if (suggestionDisabled.value) {
-          return;
+          return
         }
-        loading.value = true;
+        loading.value = true
         props.fetchSuggestions(queryString, (results) => {
-          loading.value = false;
+          loading.value = false
           if (suggestionDisabled.value) {
-            return;
+            return
           }
           if (Array.isArray(results)) {
-            suggestions.value = results;
-            highlightedIndex.value = props.highlightFirstItem ? 0 : -1;
+            suggestions.value = results
+            highlightedIndex.value = props.highlightFirstItem ? 0 : -1
           } else {
-            console.error('[Element Error][Autocomplete]autocomplete suggestions must be an array');
+            console.error('[Element Error][Autocomplete]autocomplete suggestions must be an array')
           }
         })
       }, props.debounce)
@@ -487,11 +514,11 @@
         const value = event.target.value
         // should not emit input during composition
         // see: https://github.com/ElemeFE/element/issues/10516
-        if (isComposing.value) return;
+        if (isComposing.value) return
 
         // hack for https://github.com/ElemeFE/element/issues/8548
         // should remove the following line when we don't support IE
-        if (value === nativeInputValue.value) return;
+        if (value === nativeInputValue.value) return
 
         // ctx.emit('input', event.target.value);
         ctx.emit('update:modelValue', value)
@@ -501,67 +528,108 @@
           setNativeInputValue()
         })
         // 当有查询函数时，触发查询
-        if (props.fetchSuggestions && typeof props.fetchSuggestions === 'function'){
+        if (props.fetchSuggestions && typeof props.fetchSuggestions === 'function') {
           debounceGetData(value)
         }
       }
+
       function handleChange(event) {
-        ctx.emit('change', event.target.value);
+        ctx.emit('change', event.target.value)
       }
+
       function calcIconOffset(place) {
-        let elList = [].slice.call(instance.vnode.el.querySelectorAll(`.el-input__${place}`) || []);
-        if (!elList.length) return;
-        let el = null;
+        let elList = [].slice.call(instance.vnode.el.querySelectorAll(`.el-input__${place}`) || [])
+        if (!elList.length) return
+        let el = null
         for (let i = 0; i < elList.length; i++) {
           if (elList[i].parentNode === instance.vnode.el) {
-            el = elList[i];
-            break;
+            el = elList[i]
+            break
           }
         }
-        if (!el) return;
+        if (!el) return
         const pendantMap = {
           suffix: 'append',
           prefix: 'prepend'
-        };
+        }
 
-        const pendant = pendantMap[place];
+        const pendant = pendantMap[place]
         if (ctx.slots[pendant]) {
-          el.style.transform = `translateX(${place === 'suffix' ? '-' : ''}${instance.vnode.el.querySelector(`.el-input-group__${pendant}`).offsetWidth}px)`;
+          el.style.transform = `translateX(${place === 'suffix' ? '-' : ''}${instance.vnode.el.querySelector(`.el-input-group__${pendant}`).offsetWidth}px)`
         } else {
-          el.removeAttribute('style');
+          el.removeAttribute('style')
         }
       }
+
       function updateIconOffset() {
-        calcIconOffset('prefix');
-        calcIconOffset('suffix');
+        calcIconOffset('prefix')
+        calcIconOffset('suffix')
       }
+
       function clear() {
         activated.value = false
-        ctx.emit('update:modelValue', '');
-        ctx.emit('change', '');
-        ctx.emit('clear');
+        ctx.emit('update:modelValue', '')
+        ctx.emit('change', '')
+        ctx.emit('clear')
       }
+
       function handlePasswordVisible() {
-        passwordVisible.value = !passwordVisible.value;
-        focus();
+        passwordVisible.value = !passwordVisible.value
+        focus()
       }
+
       function getInput() {
         return input.value || textarea.value
       }
+
       function getSuffixVisible() {
         return ctx.slots.suffix ||
           props.suffixIcon ||
           showClear.value ||
           props.showPassword ||
           isWordLimitVisible.value ||
-          (validateState.value && needStatusIcon.value);
+          (validateState.value && needStatusIcon.value)
       }
+
       // 移动选中光标
       function highlight(index) {
         if (!suggestionVisible.value || loading.value) {
           return
         }
+        if (index < 0) {
+          highlightedIndex.value = -1
+          return
+        }
+        if (index >= suggestions.value.length) {
+          index = suggestions.value.length - 1
+        }
 
+        // const {scrollTop, clientHeight} = useAutoSuggestions()
+        // const scrollTop = suggestionsComponent.value.scrollTop
+        // const clientHeight = useAutoSuggesstions().clientHeight
+        const scrollElement = suggestionsComponent.value.$el.querySelector('.el-autocomplete-suggestion__wrap')
+        const scrollTop = scrollElement.scrollTop
+        const offsetTop = elList.value[index].offsetTop
+        const itemHeight = elList.value[index].offsetHeight
+        const clientHeight = scrollElement.clientHeight
+
+        // console.log('clientHeight:', clientHeight)
+        // console.log('scrollTop:', scrollTop)
+        // console.log('offsetTop:', offsetTop)
+
+        if (offsetTop + itemHeight > (scrollTop + clientHeight)) {
+          scrollElement.scrollTop +=  itemHeight
+        }
+        if (offsetTop < scrollTop) {
+          scrollElement.scrollTop -= offsetTop
+        }
+
+        highlightedIndex.value = index
+
+      }
+      function handleKeyEnter() {
+        const item = suggestions.value[highlightedIndex.value]
+        itemClick(item)
       }
 
       // watch
@@ -572,11 +640,11 @@
       watch(nativeInputValue, () => {
         setNativeInputValue()
       })
-      watch(toRef(props,'type'), () => {
-        nextTick( () => {
-          setNativeInputValue();
-          resizeTextarea();
-          updateIconOffset();
+      watch(toRef(props, 'type'), () => {
+        nextTick(() => {
+          setNativeInputValue()
+          resizeTextarea()
+          updateIconOffset()
         })
       })
 
@@ -592,13 +660,13 @@
         }
       })
 
-      onMounted( () => {
-        setNativeInputValue();
-        resizeTextarea();
-        updateIconOffset();
+      onMounted(() => {
+        setNativeInputValue()
+        resizeTextarea()
+        updateIconOffset()
       })
       onUpdated(() => {
-        nextTick(updateIconOffset);
+        nextTick(updateIconOffset)
       })
 
       provide(INPUTSYMBOL, {
@@ -627,6 +695,7 @@
 
         suggestions, // 下拉结果
         suggestionsComponent,
+        elList,
         highlightedIndex,
         highlight,
         itemClick,
@@ -641,7 +710,7 @@
         handleChange,
         handleFocus,
         close,
-        test
+        handleKeyEnter
       }
     },
     computed: {

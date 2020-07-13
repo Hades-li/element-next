@@ -1,21 +1,23 @@
 // reference https://github.com/noeldelgado/gemini-scrollbar/blob/master/index.js
 
-import { h, ref, onMounted, onBeforeUnmount, nextTick,provide,inject } from 'vue'
-import { addResizeListener, removeResizeListener } from 'src/utils/resize-event'
+import {h, ref, onMounted, onBeforeUnmount, nextTick, provide, inject} from 'vue'
+import {addResizeListener, removeResizeListener} from 'src/utils/resize-event'
 import scrollbarWidth from 'src/utils/scrollbar-width'
-import { toObject } from 'src/utils/util'
+import {toObject} from 'src/utils/util'
 import Bar from './bar'
 
 const WRAPSYMBOL = Symbol()
+
 // 将wrap的dom节点提供给子组件
 export function useWrap() {
   return inject(WRAPSYMBOL)
 }
+
 /* istanbul ignore next */
 export default {
   name: 'ElScrollbar',
 
-  components: { Bar },
+  components: {Bar},
 
   props: {
     native: Boolean,
@@ -44,23 +46,26 @@ export default {
       return this.$refs.wrap;
     }
   },*/
-  setup (props, ctx) {
+  setup(props, ctx) {
     const sizeWidth = ref('0')
     const sizeHeight = ref('0')
     const moveX = ref(0)
     const moveY = ref(0)
     const wrap = ref(null)
     const resize = ref(null)
-    // const barInstance = new defineComponent(Bar)
-    // debugger
     // methods
-    function handleScroll () {
+    function handleScroll(e) {
+      const target = e.target
       // const wrap = this.wrap;
       moveY.value = ((wrap.value.scrollTop * 100) / wrap.value.clientHeight)
       moveX.value = ((wrap.value.scrollLeft * 100) / wrap.value.clientWidth)
+      ctx.emit('scroll', {
+        scrollTop: target.scrollTop,
+        scrollLeft: target.scrollLeft
+      })
     }
 
-    function update () {
+    function update() {
       let heightPercentage, widthPercentage
       // const wrap = this.wrap
       if (!wrap.value) return
@@ -75,15 +80,15 @@ export default {
     onMounted(() => {
       if (props.native) return
       nextTick(update)
-      !props.noresize && addResizeListener(resize.value, update);
+      !props.noresize && addResizeListener(resize.value, update)
     })
 
     onBeforeUnmount(() => {
-      if (props.native) return;
-      !props.noresize && removeResizeListener(resize.value, update);
+      if (props.native) return
+      !props.noresize && removeResizeListener(resize.value, update)
     })
 
-    function render () {
+    function render() {
       let gutter = scrollbarWidth()
       let style = props.wrapStyle
       // debugger
@@ -170,8 +175,9 @@ export default {
         ]
       }
 
-      return h('div', { class: 'el-scrollbar' }, nodes)
+      return h('div', {class: 'el-scrollbar'}, nodes)
     }
+
     provide(WRAPSYMBOL, wrap)
 
     onMounted(() => {

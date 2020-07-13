@@ -15,11 +15,12 @@
         tag="ul"
         wrap-class="el-autocomplete-suggestion__wrap"
         view-class="el-autocomplete-suggestion__list"
+        @scroll="handleScroll"
       >
         <li v-if="!parent.hideLoading && parent.loading">
-          <i class="el-icon-loading" />
+          <i class="el-icon-loading"/>
         </li>
-        <slot v-else />
+        <slot v-else/>
       </el-scrollbar>
     </div>
   </transition>
@@ -27,14 +28,24 @@
 <script>
   import {ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance} from 'vue'
   import {mixinProps, usePopper} from 'src/mixins/vuePopper'
-  import {useInput} from "packages/input/src/input";
+  import {useInput} from "packages/input/src/input"
+
+  const clientHeight = ref(0)
+  const scrollTop = ref(0)
+
+  export function useAutoSuggestions() {
+    return {
+      scrollTop: scrollTop.value,
+      clientHeight: clientHeight.value
+    }
+  }
 
   const props = mixinProps({
     options: {
       default() {
         return {
           gpuAcceleration: false
-        };
+        }
       }
     },
     id: String
@@ -80,6 +91,7 @@
         if (val) {
           nextTick(() => {
             popper.show()
+            clientHeight.value = instance.vnode.el.querySelector('.el-autocomplete-suggestion__wrap').clientHeight
           })
         } else {
           popper.update()
@@ -90,10 +102,16 @@
         popper.destroy()
       }
 
+      function handleScroll(elScroll) {
+        scrollTop.value = elScroll.scrollTop
+        console.log('sct:', scrollTop.value)
+
+      }
+
       onMounted(() => {
-        referenceList = instance.vnode.el.querySelector('.el-autocomplete-suggestion__list');
-        referenceList.setAttribute('role', 'listbox');
-        referenceList.setAttribute('id', props.id);
+        referenceList = instance.vnode.el.querySelector('.el-autocomplete-suggestion__list')
+        referenceList.setAttribute('role', 'listbox')
+        referenceList.setAttribute('id', props.id)
       })
 
       onUpdated(() => {
@@ -109,6 +127,7 @@
         placement: popper.placement,
         doDestroy,
         visible,
+        handleScroll,
       }
     },
     /*data() {
