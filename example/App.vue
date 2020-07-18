@@ -22,44 +22,47 @@
       input
     </button>
     <el-scrollbar class="components-page">
-      <router-view style="padding: 15px" />
+      <router-view style="padding: 15px"/>
     </el-scrollbar>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-export default {
-  setup(props, ctx) {
-    const router = useRouter()
-    const pushTo = (path) => {
-      router.push(path)
-    }
-    const root = ref(null)
-    onMounted(() => {
-      // console.log(root.value)
-    })
-    return {
-      pushTo,
-      root
-    }
-  },
-  mounted () {
+  import {ref, onMounted} from 'vue'
+  import {useRouter} from 'vue-router'
 
+  export default {
+    setup(props, ctx) {
+      const router = useRouter()
+      const pushTo = (path) => {
+        router.push(path)
+      }
+      const root = ref(null)
+      onMounted(() => {
+        // console.log(root.value)
+      })
+      return {
+        pushTo,
+        root
+      }
+    },
+    mounted() {
+
+    }
   }
-}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .main-wrap {
     box-sizing: border-box;
     height: 100%;
   }
-img {
-  width: 200px;
-}
-h1 {
-  font-family: Arial, Helvetica, sans-serif;
-}
+
+  img {
+    width: 200px;
+  }
+
+  h1 {
+    font-family: Arial, Helvetica, sans-serif;
+  }
 </style>

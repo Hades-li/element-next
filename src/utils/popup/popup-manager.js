@@ -2,7 +2,6 @@
 import {useELEMENT} from "src/index";
 import { addClass, removeClass } from 'src/utils/dom';
 const isServer = false
-const ELEMENT = useELEMENT()
 
 let hasModal = false;
 let hasInitZIndex = false;
@@ -157,6 +156,7 @@ const PopupManager = {
 Object.defineProperty(PopupManager, 'zIndex', {
   configurable: true,
   get() {
+    const ELEMENT = useELEMENT()
     if (!hasInitZIndex) {
       zIndex = zIndex || (ELEMENT || {}).zIndex || 2000;
       hasInitZIndex = true;

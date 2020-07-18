@@ -4,9 +4,9 @@
     @after-leave="doDestroy"
   >
     <div
-      v-show="showPopper"
+      v-if="showPopper"
       class="el-autocomplete-suggestion el-popper"
-      :class="{ 'is-loading': !parent.hideLoading && parent.loading }"
+      :class="{ 'is-loading': !hideLoading && loading }"
       :style="{ width: dropdownWidth }"
       role="region"
       :x-placement="placement"
@@ -17,16 +17,16 @@
         view-class="el-autocomplete-suggestion__list"
         @scroll="handleScroll"
       >
-        <li v-if="!parent.hideLoading && parent.loading">
-          <i class="el-icon-loading"/>
+        <li v-if="!hideLoading && loading">
+          <i class="el-icon-loading" />
         </li>
-        <slot v-else/>
+        <slot v-else />
       </el-scrollbar>
     </div>
   </transition>
 </template>
 <script>
-  import {ref, nextTick, onMounted, onUpdated, mergeProps, getCurrentInstance} from 'vue'
+  import {ref, nextTick, getCurrentInstance, watchEffect} from 'vue'
   import {mixinProps, usePopper} from 'src/mixins/vuePopper'
   import {useInput} from "packages/input/src/input"
 
@@ -91,6 +91,9 @@
         if (val) {
           nextTick(() => {
             popper.show()
+            referenceList = instance.vnode.el?.querySelector('.el-autocomplete-suggestion__list')
+            referenceList?.setAttribute('role', 'listbox')
+            referenceList?.setAttribute('id', props.id)
             clientHeight.value = instance.vnode.el.querySelector('.el-autocomplete-suggestion__wrap').clientHeight
           })
         } else {
@@ -104,23 +107,12 @@
 
       function handleScroll(elScroll) {
         scrollTop.value = elScroll.scrollTop
-        console.log('sct:', scrollTop.value)
-
       }
-
-      onMounted(() => {
-        referenceList = instance.vnode.el.querySelector('.el-autocomplete-suggestion__list')
-        referenceList.setAttribute('role', 'listbox')
-        referenceList.setAttribute('id', props.id)
-      })
-
-      onUpdated(() => {
-        // console.log(showPopper.value)
-      })
 
       return {
         showPopper,
         hideLoading: input.hideLoading,
+        loading: input.loading,
         el: instance.vnode.el,
         parent,
         dropdownWidth,

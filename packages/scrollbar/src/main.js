@@ -53,6 +53,7 @@ export default {
     const moveY = ref(0)
     const wrap = ref(null)
     const resize = ref(null)
+
     // methods
     function handleScroll(e) {
       const target = e.target
@@ -122,7 +123,7 @@ export default {
         ref: wrap,
         style,
         onScroll: handleScroll,
-        class: [props.wrapClass, 'el-scrollbar__wrap', gutter ? 'el-scrollbar__wrap--hidden-default' : '']
+        class: [props.wrapClass, 'el-scrollbar__wrap', gutter ? '' : 'el-scrollbar__wrap--hidden-default']
       }, [view])
 
       let nodes = undefined

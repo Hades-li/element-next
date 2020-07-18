@@ -5,4 +5,8 @@ body,
 }
 .components-page {
   height: calc(100% - 24px);
+  > .el-scrollbar__wrap {
+    overflow-x: auto;
+  }
 }
+

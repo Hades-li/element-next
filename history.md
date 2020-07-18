@@ -8,5 +8,6 @@ add eslint
 - Col: 100%
 - Radio: 100%
 - Radio-group: 100%
+- Input: 100%
 - Form: 50%
 - Form-item: 50%

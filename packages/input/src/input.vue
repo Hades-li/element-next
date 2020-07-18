@@ -147,7 +147,9 @@
         :class="{'highlighted': highlightedIndex === index}"
         @click="itemClick(item)"
       >
-        {{ item.value }}
+        <slot :item="item">
+          {{ item[valueKey] }}
+        </slot>
       </li>
     </el-autocomplete-suggestions>
   </div>
@@ -159,7 +161,6 @@
     reactive,
     computed,
     watch,
-    watchEffect,
     nextTick,
     getCurrentInstance,
     onMounted,
@@ -176,9 +177,9 @@
   import calcTextareaHeight from './calcTextareaHeight'
   import merge from 'src/utils/merge'
   import {isKorean} from 'src/utils/shared'
-  import ElAutocompleteSuggestions,{useAutoSuggestions} from './autocomplete-suggestions'
+  import ElAutocompleteSuggestions, {useAutoSuggestions} from './autocomplete-suggestions'
   import debounce from 'lodash/debounce'
-  // import test from '@/views/test'
+  import {generateId} from "src/utils/util";
 
   const INPUTSYMBOL = Symbol('Input')
 
@@ -290,10 +291,18 @@
         type: Number,
         default: 300
       },
+      placement: {
+        type: String,
+        default: 'bottom-start'
+      },
       triggerOnFocus: {
         type: Boolean,
         default: true
       },
+      valueKey: {
+        type: String,
+        default: 'value'
+      }
     },
 
     setup(props, ctx) {
@@ -380,7 +389,6 @@
         if (typeof props.modelValue === 'number') {
           return String(props.modelValue).length
         }
-
         return (props.modelValue || '').length
       })
       const inputExceed = computed(() => {
@@ -392,6 +400,9 @@
         // const suggestions = suggestions;
         let isValidData = Array.isArray(suggestions.value) && suggestions.value.length > 0
         return (isValidData || loading.value) && activated.value
+      })
+      const id = computed(() => {
+        return `el-autocomplete-${generateId()}`;
       })
 
       // methods
@@ -597,7 +608,7 @@
           return
         }
         if (index < 0) {
-          highlightedIndex.value = -1
+          highlightedIndex.value = 0
           return
         }
         if (index >= suggestions.value.length) {
@@ -618,15 +629,16 @@
         // console.log('offsetTop:', offsetTop)
 
         if (offsetTop + itemHeight > (scrollTop + clientHeight)) {
-          scrollElement.scrollTop +=  itemHeight
+          scrollElement.scrollTop += itemHeight
         }
         if (offsetTop < scrollTop) {
-          scrollElement.scrollTop -= offsetTop
+          scrollElement.scrollTop -= itemHeight
         }
 
         highlightedIndex.value = index
 
       }
+
       function handleKeyEnter() {
         const item = suggestions.value[highlightedIndex.value]
         itemClick(item)
@@ -673,6 +685,7 @@
         instance,
         inputElm: input,
         hideLoading: props.hideLoading,
+        loading,
         itemClick
       })
 
@@ -692,7 +705,9 @@
         upperLimit,
         validateIcon,
         textareaStyle,
+        textLength,
 
+        id,
         suggestions, // 下拉结果
         suggestionsComponent,
         elList,
