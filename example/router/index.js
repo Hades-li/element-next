@@ -46,6 +46,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "link" */ '../views/Input.vue')
   },
   {
+    path: '/inputNumber',
+    name: 'inputNumber',
+    component: () => import(/* webpackChunkName: "link" */ '../views/InputNumber.vue')
+  },
+  {
     path: '/test',
     name: 'test',
     component: () => import('../views/test')

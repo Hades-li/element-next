@@ -21,6 +21,9 @@
     <button @click="pushTo('/input')">
       input
     </button>
+    <button @click="pushTo('/inputNumber')">
+      inputNumber
+    </button>
     <el-scrollbar class="components-page">
       <router-view style="padding: 15px"/>
     </el-scrollbar>

@@ -327,9 +327,7 @@
       const loading = ref(false)
       const highlightedIndex = ref(-1)
       const activated = ref(false)
-      const test = ref(null)
 
-      console.log(instance.vnode)
       // computed
       const _elFormItemSize = computed(() => {
         return (elFormItem || {}).elFormItemSize

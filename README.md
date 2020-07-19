@@ -2,7 +2,11 @@
 
 > element-ui for Vue 3.0
 
-这是一个基于element-ui的重构。基于vue3.0的组合式API，重构每一个组件。此版本不会兼容vue2.x
+## 介绍
+element-ui基于vue3.0的重构。
+此项目并不是仅解决element-ui在vue3.0的兼容性问题。而是采用vue3.0的新特性composition api对所有组件进行重写。
+
+因此，不会兼容vue2.x
 
 ## developer
 yarn run dev

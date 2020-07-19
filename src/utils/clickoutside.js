@@ -1,5 +1,5 @@
 import { on } from 'src/utils/dom';
-import {resolveDirective, withDirectives} from 'vue'
+// import {resolveDirective, withDirectives} from 'vue'
 const nodeList = [];
 const ctx = '@@clickoutsideContext';
 
