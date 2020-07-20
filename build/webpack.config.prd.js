@@ -11,7 +11,7 @@ function resolve (dir) {
 const env = process.env.NODE_ENV
 module.exports = merge(baseConf({ NODE_ENV: env }), {
   mode: env,
-  entry: './example/index.ts',
+  entry: './example/index.js',
   output: {
     path: resolve('dist'),
     filename: 'index.js',
