@@ -1,13 +1,18 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import ele from 'src/index'
+import element from 'src/index'
 import './assets/css/normalize.css'
 import 'src/theme-chalk/src/index.scss'
 import './assets/css/common.scss'
-createApp(App)
-  .use(router)
+
+const app = createApp(App)
+
+app.use(router)
   .use(store)
-  .use(ele)
+  .use(element)
   .mount('#app')
+
+app.config.devtools = process.env.NODE_ENV === 'development'
+

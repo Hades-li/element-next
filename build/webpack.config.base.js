@@ -14,6 +14,7 @@ module.exports = (env, argv) => {
   return {
     resolve: {
       alias: {
+        'element-ui': resolve('/'),
         '@': resolve('example'),
         src: resolve('src'),
         packages: resolve('packages'),

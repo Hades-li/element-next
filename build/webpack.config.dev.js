@@ -23,7 +23,7 @@ module.exports = merge(baseConf({ NODE_ENV: env }), {
     port: 8080,
     hot: true,
     progress: true,
-    quiet: true,
+    quiet: false,
     historyApiFallback: true,
     overlay: {
       errors: true
