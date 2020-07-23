@@ -9,5 +9,6 @@ add eslint
 - Radio: 100%
 - Radio-group: 100%
 - Input: 100%
+- Tag: 100%
 - Form: 50%
 - Form-item: 50%
