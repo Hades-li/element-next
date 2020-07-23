@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Button from '../views/Button.vue'
+// import Button from '../views/Button.vue'
+const Button = require('../views/Button')
 
 const routes = [
   {
@@ -51,10 +52,21 @@ const routes = [
     component: () => import(/* webpackChunkName: "link" */ '../views/InputNumber.vue')
   },
   {
+    path: '/Select',
+    name: 'Select',
+    component: () => import('../views/Select')
+  },
+  {
+    path: '/Tag',
+    name: 'tag',
+    component: () => import('../views/Tag')
+  },
+  /*{
     path: '/test',
     name: 'test',
     component: () => import('../views/test')
-  }
+  },*/
+
 ]
 
 const router = createRouter({

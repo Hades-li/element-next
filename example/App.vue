@@ -1,6 +1,6 @@
 <template>
   <div class="main-wrap">
-    <button @click="pushTo('/')">
+    <!--<button @click="pushTo('/')">
       button
     </button>
     <button @click="pushTo('/layout')">
@@ -23,7 +23,10 @@
     </button>
     <button @click="pushTo('/inputNumber')">
       inputNumber
-    </button>
+    </button>-->
+    <el-button v-for="(item,index) in routes" :key="index" @click="pushTo(item.path)">
+      {{item.name}}
+    </el-button>
     <el-scrollbar class="components-page">
       <router-view style="padding: 15px"/>
     </el-scrollbar>
@@ -32,11 +35,12 @@
 
 <script>
   import {ref, onMounted} from 'vue'
-  import {useRouter} from 'vue-router'
+  import {useRouter, useRoute} from 'vue-router'
 
   export default {
     setup(props, ctx) {
       const router = useRouter()
+      const routes = ref(router.getRoutes())
       const pushTo = (path) => {
         router.push(path)
       }
@@ -45,6 +49,7 @@
         // console.log(root.value)
       })
       return {
+        routes,
         pushTo,
         root
       }

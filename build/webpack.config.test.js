@@ -11,13 +11,15 @@ function resolve (dir) {
 const env = process.env.NODE_ENV // 获取全局环境变量
 
 module.exports = merge(baseConf({ NODE_ENV: env }), {
-  mode: 'development',
-  /*entry: './src/index.js',
-  output: {
-    path: resolve('dist'),
-    filename: 'app.js',
-    publicPath: '/dist/'
-  },*/
+  mode: env,
+  // target: 'node',
+  /*entry: './src/index.js',*/
+  // output: {
+  //   path: resolve('dist'),
+  //   filename: 'app.js',
+  //   publicPath: '/dist/',
+  //   libraryTarget: 'umd'
+  // },
   // devtool: 'cheap-module-eval-source-map',
   /*plugins: [
     new webpack.HotModuleReplacementPlugin(), // 支持热模块替换
