@@ -11,10 +11,10 @@ function resolve (dir) {
 const env = process.env.NODE_ENV
 module.exports = merge(baseConf({ NODE_ENV: env }), {
   mode: env,
-  entry: './example/index.js',
+  entry: './example/button.spec.js',
   output: {
     path: resolve('dist'),
-    filename: 'index.js',
+    filename: 'button.spec.js',
     publicPath: '/',
     chunkFilename: 'js/[name].[contenthash:8].js',
     libraryTarget: 'umd',
