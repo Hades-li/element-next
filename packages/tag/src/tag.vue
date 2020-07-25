@@ -1,5 +1,6 @@
 <script>
-  import { h } from 'vue'
+  import {h, computed} from 'vue'
+  import {useELEMENT} from "src/index"
 
   export default {
     name: 'ElTag',
@@ -15,11 +16,51 @@
         type: String,
         default: 'light',
         validator(val) {
-          return ['dark', 'light', 'plain'].indexOf(val) !== -1;
+          return ['dark', 'light', 'plain'].indexOf(val) !== -1
         }
       }
     },
-    methods: {
+    setup(props, ctx) {
+      // const {type, hit, effect} = props
+      const ELEMENT = useELEMENT()
+      // computed
+      const tagSize = computed(() => {
+        return props.size || (ELEMENT || {}).size
+      })
+
+      // methods
+      function handleClose(event) {
+        event.stopPropagation()
+        ctx.emit('close', event)
+      }
+
+      function handleClick(event) {
+        ctx.emit('click', event)
+      }
+
+      const classes = [
+        'el-tag',
+        props.type ? `el-tag--${props.type}` : '',
+        tagSize.value ? `el-tag--${tagSize.value}` : '',
+        props.effect ? `el-tag--${props.effect}` : '',
+        props.hit && 'is-hit'
+      ]
+
+      const child = h('i', {
+        class: 'el-tag__close el-icon-close',
+        onClick: handleClose
+      })
+      const tagEl = h('span', {
+        class: classes,
+        style: {backgroundColor: props.color},
+        onClick: handleClick,
+      }, [ctx.slots.default(), props.closable && child])
+
+      return () => props.disableTransitions ? tagEl : h('transition', {
+        name: 'el-zoom-in-center'
+      }, [tagEl])
+    },
+    /*methods: {
       handleClose(event) {
         event.stopPropagation();
         this.$emit('close', event);
@@ -27,13 +68,9 @@
       handleClick(event) {
         this.$emit('click', event);
       }
-    },
-    computed: {
-      tagSize() {
-        return this.size || (this.$ELEMENT || {}).size;
-      }
-    },
-    render() {
+    },*/
+    /*computed: {},*/
+    /*render() {
       const { type, tagSize, hit, effect } = this;
       const classes = [
         'el-tag',
@@ -41,22 +78,12 @@
         tagSize ? `el-tag--${tagSize}` : '',
         effect ? `el-tag--${effect}` : '',
         hit && 'is-hit'
-      ];
-      /*const tagEl =
-        <span
-          class={ classes }
-          style={{ backgroundColor: this.color }}
-          on-click={ this.handleClick }>
-          { this.$slots.default }
-          {
-            this.closable && <i class="el-tag__close el-icon-close" on-click={ this.handleClose }></i>
-          }
-        </span>*/
+      ]
+
       const child = h('i', {
         class: 'el-tag__close el-icon-close',
         onClick: this.handleClose
       })
-      console.log(this.$slots.default())
       const tagEl = h('span', {
         class: classes,
         style: {backgroundColor: this.color},
@@ -66,8 +93,8 @@
       return this.disableTransitions ? tagEl : h('transition', {
         name: 'el-zoom-in-center'
       },[tagEl])
-      /*<transition name="el-zoom-in-center">{ tagEl }</transition>*/
+      /!*<transition name="el-zoom-in-center">{ tagEl }</transition>*!/
       // return tagEl
-    }
-  };
+    }*/
+  }
 </script>

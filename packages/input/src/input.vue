@@ -2,6 +2,7 @@
   <div
     v-clickoutside="close"
     :class="[
+
       type === 'textarea' ? 'el-textarea' : 'el-input',
       inputSize ? 'el-input--' + inputSize : '',
       {
@@ -200,7 +201,7 @@
     directives: {clickoutside},
     // mixins: [emitter, Migrating],
 
-    inheritAttrs: false,
+    inheritAttrs: true,
 
     /*inject: {
       elForm: {
