@@ -1,5 +1,5 @@
 <script>
-  import {h, computed, Transition} from 'vue'
+  import {h, computed, Transition,ref, onBeforeUnmount} from 'vue'
   import {useELEMENT} from "src/index"
   export default {
     name: 'ElTag',
@@ -20,6 +20,7 @@
       }
     },
     setup(props, ctx) {
+      const show = ref(true)
       // const {type, hit, effect} = props
       const ELEMENT = useELEMENT()
       // computed
@@ -53,11 +54,11 @@
         class: classes,
         style: {backgroundColor: props.color},
         onClick: handleClick,
-      }, [ctx.slots.default(), props.closable && child])
+      })
 
-      return () => props.disableTransitions ? tagEl : h(Transition, {
-        name: 'el-zoom-in-center'
-      }, [tagEl])
+      return () => h(Transition, {
+        name: 'el-zoom-in-center',
+      }, [show.value && h(tagEl,[ctx.slots.default(), props.closable && child])])
     },
     /*methods: {
       handleClose(event) {

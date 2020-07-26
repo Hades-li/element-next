@@ -1,8 +1,8 @@
-import ElTag from './src/test';
+import Test from './src/test';
 
 /* istanbul ignore next */
-ElTag.install = function(app) {
-  app.component(ElTag.name, ElTag);
+Test.install = function(app) {
+  app.component(Test.name, Test);
 };
 
-export default ElTag;
+export default Test;

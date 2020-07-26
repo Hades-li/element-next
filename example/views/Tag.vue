@@ -4,72 +4,100 @@
     <h3>基础用法</h3>
     <div>
       <el-tag>标签一</el-tag>
-      <el-tag type="success">标签二</el-tag>
-      <el-tag type="info">标签三</el-tag>
-      <el-tag type="warning">标签四</el-tag>
-      <el-tag type="danger">标签五</el-tag>
+      <el-tag type="success">
+        标签二
+      </el-tag>
+      <el-tag type="info">
+        标签三
+      </el-tag>
+      <el-tag type="warning">
+        标签四
+      </el-tag>
+      <el-tag type="danger">
+        标签五
+      </el-tag>
     </div>
     <h3>可删除</h3>
     <div>
       <el-tag
-        v-for="tag in tags"
-        :key="tag.name"
+        v-for="t in tags"
+        :key="t.name"
         closable
-        :type="tag.type">
-        {{tag.name}}
+        :type="t.type"
+      >
+        {{ t.name }}
       </el-tag>
     </div>
     <h3>动态编辑标签</h3>
     <div>
       <el-tag
-        :key="tag"
-        v-for="tag in dynamicTags"
+        v-for="(item, index) in dynamicTags"
+        :key="index"
         closable
-        :disable-transitions="false"
-        @close="handleClose(tag)">
-        {{tag}}
+        @close="handleClose(item)"
+      >
+        {{ item }}
       </el-tag>
       <el-input
-        class="input-new-tag"
         v-if="inputVisible"
-        v-model="inputValue"
         ref="saveTagInput"
+        v-model="inputValue"
+        class="input-new-tag"
         size="small"
         @keyup.enter="handleInputConfirm"
         @blur="handleInputConfirm"
+      />
+      <el-button
+        v-else
+        class="button-new-tag"
+        size="small"
+        @click="showInput"
       >
-      </el-input>
-      <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+        + New Tag
+      </el-button>
+      <test
+        v-for="(tag, index) in dynamicTags"
+        :key="index"
+        @click="handleClose(tag)"
+      >
+        {{ tag }}
+      </test>
     </div>
-  </div>
-  <h3>不同主题</h3>
-  <div class="tag-group">
-    <span class="tag-group__title">Dark</span>
-    <el-tag
-      v-for="item in items"
-      :key="item.label"
-      :type="item.type"
-      effect="dark">
-      {{ item.label }}
-    </el-tag>
-  </div>
-  <div class="tag-group">
-    <span class="tag-group__title">Plain</span>
-    <el-tag
-      v-for="item in items"
-      :key="item.label"
-      :type="item.type"
-      effect="plain">
-      {{ item.label }}
-    </el-tag>
+    <h3>不同主题</h3>
+    <div class="tag-group">
+      <span class="tag-group__title">Dark</span>
+      <el-tag
+        v-for="item in items"
+        :key="item.label"
+        :type="item.type"
+        effect="dark"
+      >
+        {{ item.label }}
+      </el-tag>
+    </div>
+    <div class="tag-group">
+      <span class="tag-group__title">Plain</span>
+      <el-tag
+        v-for="item in items"
+        :key="item.label"
+        :type="item.type"
+        effect="plain"
+      >
+        {{ item.label }}
+      </el-tag>
+    </div>
   </div>
 </template>
 
 <script>
   import {ref, nextTick} from 'vue'
+  import Test from 'packages/test'
 
   export default {
     name: "Tag",
+    components: {
+      Test
+    },
     setup() {
       const tags = ref([
         {name: '标签一', type: ''},
@@ -85,13 +113,14 @@
         { type: 'danger', label: '标签四' },
         { type: 'warning', label: '标签五' }
       ])
-      const dynamicTags = ref(['标签一', '标签二', '标签三'])
+      let dynamicTags = ref(['标签一', '标签二', '标签三'])
       const inputVisible = ref(false)
       const inputValue = ref('')
       const saveTagInput = ref(null)
 
       function handleClose(tag) {
-        dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1);
+        const index = dynamicTags.value.indexOf(tag)
+        dynamicTags.value.splice(index, 1);
       }
 
       function showInput() {

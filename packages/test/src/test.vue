@@ -1,13 +1,20 @@
-<template>
+<!--<template>
   <div class="test">
     test:<slot></slot>
   </div>
-</template>
+</template>-->
 <script>
+  import {ref,h, Transition} from 'vue'
   export default {
     setup(props, ctx) {
-      const text = ctx.slots.default()
-      console.log(text)
-    }
+      return () => h(Transition, {
+        name: 'fade'
+      },
+        h('div',[ctx.slots.default()])
+      )
+    },
+    /*render() {
+      return h('div', this.$slots.default())
+    }*/
   }
 </script>

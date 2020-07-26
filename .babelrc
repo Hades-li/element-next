@@ -4,11 +4,7 @@
   ],
   "plugins": [
     [
-      "@ant-design-vue/babel-plugin-jsx",
-      {
-        "transformOn": true,
-        "compatibleProps": true
-      }
+      "@ant-design-vue/babel-plugin-jsx"
     ]
   ]
 }
