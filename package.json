@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@ant-design-vue/babel-helper-vue-transform-on": "^1.0.1",
-    "@ant-design-vue/babel-plugin-jsx": "^1.0.0-beta.3",
+    "@ant-design-vue/babel-plugin-jsx": "^1.0.0-beta.4",
     "@babel/core": "^7.10.2",
     "@babel/preset-react": "^7.10.1",
     "@babel/preset-typescript": "^7.10.1",

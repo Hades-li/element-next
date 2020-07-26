@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import {ref, onUpdated, getCurrentInstance} from 'vue'
+  // import {ref, onUpdated, getCurrentInstance} from 'vue'
   import Test from 'packages/test'
 
   export default {
