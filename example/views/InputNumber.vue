@@ -27,14 +27,6 @@
   import {ref, watch} from 'vue'
   export default {
     name: "InputNumber",
-    data() {
-      return {
-        currentValue: 0
-      }
-    },
-    mounted() {
-      console.log(this.currentValue)
-    },
     setup() {
       const num = ref(1)
       const num1 = ref(1)

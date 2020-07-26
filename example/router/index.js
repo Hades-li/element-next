@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import Button from '../views/Button.vue'
-const Button = require('../views/Button')
+import Button from '../views/Button.vue'
+// const Button = require('../views/Button')
 
 const routes = [
   {
-    path: '/',
+    path: '/button',
     name: 'button',
     component: Button
   },
@@ -61,11 +61,11 @@ const routes = [
     name: 'tag',
     component: () => import('../views/Tag')
   },
-  /*{
+  {
     path: '/test',
     name: 'test',
     component: () => import('../views/test')
-  },*/
+  },
 
 ]
 

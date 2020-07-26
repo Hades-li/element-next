@@ -54,7 +54,7 @@
       round: Boolean,
       circle: Boolean
     },
-    setup(props,ctx) {
+    setup(props, ctx) {
       // inject
       const elForm = inject('elForm', '')
       const elFormItem = inject('elFormItem', '')

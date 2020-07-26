@@ -24,11 +24,15 @@
     <button @click="pushTo('/inputNumber')">
       inputNumber
     </button>-->
-    <el-button v-for="(item,index) in routes" :key="index" @click="pushTo(item.path)">
-      {{item.name}}
+    <el-button
+      v-for="(item, index) in routes"
+      :key="index"
+      @click="pushTo(item.path)"
+    >
+      {{ item.name }}
     </el-button>
     <el-scrollbar class="components-page">
-      <router-view style="padding: 15px"/>
+      <router-view style="padding: 15px" />
     </el-scrollbar>
   </div>
 </template>

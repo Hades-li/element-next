@@ -1,7 +1,6 @@
 <script>
-  import {h, computed} from 'vue'
+  import {h, computed, Transition} from 'vue'
   import {useELEMENT} from "src/index"
-
   export default {
     name: 'ElTag',
     props: {
@@ -56,7 +55,7 @@
         onClick: handleClick,
       }, [ctx.slots.default(), props.closable && child])
 
-      return () => props.disableTransitions ? tagEl : h('transition', {
+      return () => props.disableTransitions ? tagEl : h(Transition, {
         name: 'el-zoom-in-center'
       }, [tagEl])
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="Button">
     <h3>Button</h3>
     <el-row>
       <el-button>默认按钮</el-button>
@@ -67,6 +67,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Home'
+  name: 'Button',
+
 }
 </script>
