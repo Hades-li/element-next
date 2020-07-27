@@ -10,7 +10,11 @@ import Button from 'packages/button'
 
 describe('A spec suite', function () {
   it('Button', function () {
-    const wrapper = mount(Button)
+    const wrapper = mount(Button, {
+      slots: {
+        default: '确认'
+      }
+    })
 
     expect(wrapper.find('button').classes()).to.be.include('el-button')
 
