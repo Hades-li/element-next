@@ -3,8 +3,11 @@ import Tag from 'packages/tag'
 
 describe('Tag', () => {
   it('create', () => {
-    const wrapper = mount(Tag)
-    // wrapper.find('span')
+    const wrapper = mount(Tag, {
+      slots: {
+        default: 'hello'
+      }
+    })
     expect(wrapper.html()).to.be.include('span')
   })
 })
