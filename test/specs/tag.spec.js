@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils/dist/vue-test-utils.cjs'
+import { mount } from '@vue/test-utils/dist/vue-test-utils.esm-bundler'
 import Tag from 'packages/tag'
 
 describe('Tag', () => {
