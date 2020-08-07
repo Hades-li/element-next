@@ -15,7 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      './test/specs/slots.spec.js'
+      './test/specs/test.spec.js'
     ],
 
 
@@ -28,7 +28,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './test/specs/slots.spec.js': ['webpack','sourcemap']
+      './test/specs/test.spec.js': ['webpack','sourcemap']
     },
 
     webpack: webpackConfig,
@@ -67,6 +67,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    // concurrency: Infinity
   })
 }
