@@ -44,7 +44,7 @@
     </el-row>
 
     <el-row style="margin-top: 10px">
-      <el-button type="primary" :loading="true">加载中</el-button>
+      <el-button type="primary" :loading="true" @click="handleClick">加载中</el-button>
     </el-row>
 
     <el-row style="margin-top: 10px">
@@ -55,7 +55,7 @@
     </el-row>
 
     <el-row style="margin-top: 10px">
-      <el-button round>默认按钮</el-button>
+      <el-button round @click="handleClick">默认按钮</el-button>
       <el-button size="medium" round>中等按钮</el-button>
       <el-button size="small" round>小型按钮</el-button>
       <el-button size="mini" round>超小按钮</el-button>
@@ -68,6 +68,12 @@
 
 export default {
   name: 'Button',
-
+  setup() {
+    return {
+      handleClick() {
+        debugger
+      }
+    }
+  }
 }
 </script>

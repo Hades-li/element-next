@@ -4,6 +4,7 @@
     :disabled="buttonDisabled || loading"
     :autofocus="autofocus"
     :type="nativeType"
+    @click="handleClick"
     :class="[
       type ? 'el-button--' + type : '',
       buttonSize ? 'el-button--' + buttonSize : '',
@@ -71,9 +72,13 @@
         return props.disabled || (elForm || {}).disabled
       })
 
+      function handleClick(evt) {
+        ctx.emit('click', evt)
+      }
       return {
         buttonSize,
-        buttonDisabled
+        buttonDisabled,
+        handleClick
       }
     },
     /*inject: {
