@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils/dist/vue-test-utils.esm-bundler'
+import { mount } from '@vue/test-utils'
 import Tag from 'packages/tag'
 
 describe('Tag', () => {
@@ -8,6 +8,6 @@ describe('Tag', () => {
         default: 'hello'
       }
     })
-    // expect(wrapper.html()).to.be.include('span')
+    expect(wrapper.html()).toContain('span')
   })
 })

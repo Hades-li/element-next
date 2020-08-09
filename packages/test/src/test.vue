@@ -7,7 +7,8 @@
 <script>
   import {ref,h, Transition} from 'vue'
   export default {
-    setup() {
+    setup(props,ctx) {
+
     },
     /*render() {
       return h('div', this.$slots.default())

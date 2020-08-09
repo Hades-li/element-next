@@ -1,5 +1,5 @@
 <script>
-  import {h, computed, Transition,ref, onBeforeUnmount} from 'vue'
+  import {h, computed, Transition,ref} from 'vue'
   import {useELEMENT} from "src/index"
   export default {
     name: 'ElTag',

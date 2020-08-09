@@ -12,7 +12,7 @@ describe('A spec suite', function () {
   it('Button', function () {
     const wrapper = mount(Button)
 
-    expect(wrapper.find('button').classes()).to.be.include('el-button')
+    expect(wrapper.find('button').classes()).toContain('el-button')
 
   })
 })
