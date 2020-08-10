@@ -5,13 +5,9 @@
   </div>
 </template>
 <script>
-  import {ref,h, Transition} from 'vue'
   export default {
-    setup(props,ctx) {
+    setup() {
 
-    },
-    /*render() {
-      return h('div', this.$slots.default())
-    }*/
+    }
   }
 </script>

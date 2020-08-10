@@ -56,9 +56,9 @@
         onClick: handleClick,
       })
 
-      return () => h(Transition, {
+      return () => props.disableTransitions? tagEl : h(Transition, {
         name: 'el-zoom-in-center',
-      }, [show.value && h(tagEl,[ctx.slots.default(), props.closable && child])])
+      }, [h(tagEl,[ctx.slots.default(), props.closable && child])])
     },
     /*methods: {
       handleClose(event) {

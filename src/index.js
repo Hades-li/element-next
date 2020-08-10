@@ -203,7 +203,7 @@ const install = function (app, opts = {}) {
 }
 
 export function useELEMENT () {
-  return inject(ELEMENTSymbol)
+  return inject(ELEMENTSymbol, undefined)
 }
 
 /* istanbul ignore if */

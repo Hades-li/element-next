@@ -233,19 +233,19 @@
         potentialLabelWidthArr: [] // use this array to calculate auto width
       }
     },*/
-    created() {
-      /*this.$on('el.form.addField', (field) => {
+    /*created() {
+      this.$on('el.form.addField', (field) => {
         if (field) {
           this.fields.push(field)
         }
-      })*/
-      /* istanbul ignore next */
-      /*this.$on('el.form.removeField', (field) => {
+      })
+      /!* istanbul ignore next *!/
+      this.$on('el.form.removeField', (field) => {
         if (field.prop) {
           this.fields.splice(this.fields.indexOf(field), 1)
         }
-      })*/
-    },
+      })
+    },*/
     /*methods: {
       resetFields() {
         if (!this.model) {

@@ -5,7 +5,7 @@ describe('Tag', () => {
   it('create', () => {
     const wrapper = mount(Tag, {
       slots: {
-        default: 'tag'
+        default: () => 'tag'
       }
     })
     const el = wrapper.find('.el-tag')

@@ -70,6 +70,7 @@
         v-for="item in items"
         :key="item.label"
         :type="item.type"
+        :disable-Transitions="false"
         effect="dark"
       >
         {{ item.label }}
