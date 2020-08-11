@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "deepmerge": "^4.2.2",
     "lodash": "^4.17.15",
+    "mitt": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "vue": "^3.0.0-rc.5",
     "vue-router": "^4.0.0-beta.2",
